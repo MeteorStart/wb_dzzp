@@ -1,6 +1,7 @@
 package com.qiyang.wb_dzzp.base
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -63,6 +64,22 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(),
         ActivityStackManager.removeActivity(this)
         cancel()
         mBinding.unbind()
+    }
+
+    /**
+     * 导航栏，状态栏隐藏
+     * @param activity
+     */
+    fun NavigationBarStatusBar(activity: Activity, hasFocus: Boolean) {
+        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
+            val decorView = activity.window.decorView
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
     }
 
     /** 透明状态栏 */
