@@ -71,3 +71,9 @@ fastlane/test_output
 fastlane/readme.md
 .idea/codeStyles/codeStyleConfig.xml
 .idea/codeStyles/Project.xml
+.idea/
+.DS_Store
+app/.DS_Store
+app/src/.DS_Store
+app/src/main/.DS_Store
+app/src/main/java/com/qiyang/wb_dzzp/.DS_Store
