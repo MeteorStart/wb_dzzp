@@ -73,6 +73,16 @@ public class FileHelper {
         }
     }
 
+    public File getFile(String filename) throws Exception {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            filename = Environment.getExternalStorageDirectory().getCanonicalPath() + "/" + filename;
+            File file = new File(filename);
+            return file;
+        } else {
+            return null;
+        }
+    }
+
     //读取SD卡中文件的方法
 //定义读取文件的方法:
     public String readFromSD(String filename) throws IOException {
@@ -80,7 +90,7 @@ public class FileHelper {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             filename = Environment.getExternalStorageDirectory().getCanonicalPath() + "/" + filename + ".txt";
             File file = new File(filename);
-            if (file.exists()){
+            if (file.exists()) {
                 //打开文件输入流
                 FileInputStream input = new FileInputStream(filename);
                 byte[] temp = new byte[1024];

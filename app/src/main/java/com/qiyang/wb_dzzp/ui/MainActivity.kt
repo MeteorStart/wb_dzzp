@@ -8,6 +8,7 @@ import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.data.StationBody
 import com.qiyang.wb_dzzp.databinding.ActivityMainBinding
 import com.qiyang.wb_dzzp.network.repository.BusRepository
+import com.qiyang.wb_dzzp.utils.FileHelper
 import com.qiyang.wb_dzzp.utils.FileUtils
 import com.qiyang.wb_dzzp.utils.RecycleViewUtils
 import com.qiyang.wb_dzzp.viewmodel.MainModel
@@ -54,9 +55,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val regId = FileUtils.getEquipId() + ""
 
         if (sim.isNotEmpty()) {
-            getStation(sim)
+//            getStation(sim)
         } else if (regId.isNotEmpty()) {
             getConfig(regId)
+        }
+        val file = FileHelper().getFile("4.png")
+        if (file!=null){
+            mViewModel.upLoadFile(file,{
+
+            },{
+
+            })
         }
     }
 

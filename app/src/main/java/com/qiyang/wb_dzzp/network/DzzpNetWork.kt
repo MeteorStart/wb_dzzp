@@ -1,11 +1,13 @@
 package com.qiyang.wb_dzzp.network
 
-import com.qiyang.wb_dzzp.data.RegisterBody
-import com.qiyang.wb_dzzp.data.StationBody
+import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.RetrofitManager
 import com.qiyang.wb_dzzp.network.http.UrlConstant
 import com.qiyang.wb_dzzp.network.service.BusService
+import okhttp3.MultipartBody
 import retrofit2.http.Body
+import retrofit2.http.Part
+import retrofit2.http.QueryMap
 
 /**
  * @author: X_Meteor
@@ -47,6 +49,21 @@ class DzzpNetWork {
 
     //获取实时数据
     suspend fun station(@Body body: StationBody) = busService.station(body)
+
+    //上送硬件数据
+    suspend fun extend(@Body body: ExtendBody) = busService.extend(body)
+
+    //上送当前设置
+    suspend fun curSet(@Body body: CurSetBody) = busService.curSet(body)
+
+    //上送当前版本号
+    suspend fun curVersion(@Body body: CurVersionBody) = busService.curVersion(body)
+
+    //上传文件
+    suspend fun upLoadFile(
+        @QueryMap map: MutableMap<String, Any>,
+        @Part file: MultipartBody.Part
+    ) = busService.upLoadFile(map, file)
 
 }
 

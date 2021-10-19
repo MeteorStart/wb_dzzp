@@ -9,9 +9,14 @@ import com.qiyang.wb_dzzp.BaseConfig.DEFUT_GET_STATION_TIME
 import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.SUCESS
 import com.qiyang.wb_dzzp.network.repository.BusRepository
+import com.qiyang.wb_dzzp.utils.FileUtils
 import kotlinx.coroutines.Job
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * @author: X_Meteor
@@ -91,4 +96,72 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    fun extend(body: ExtendBody, success: () -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val result = busRepository.extend(body)
+                if (result.code == SUCESS) {
+
+                } else {
+                    fail(result.msg)
+                }
+            }
+            onError = {
+                fail(it.localizedMessage)
+            }
+        }
+    }
+
+    fun curSet(body: CurSetBody, success: () -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val result = busRepository.curSet(body)
+                if (result.code == SUCESS) {
+
+                } else {
+                    fail(result.msg)
+                }
+            }
+            onError = {
+                fail(it.localizedMessage)
+            }
+        }
+    }
+
+    fun curVersion(body: CurVersionBody, success: () -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val result = busRepository.curVersion(body)
+                if (result.code == SUCESS) {
+
+                } else {
+                    fail(result.msg)
+                }
+            }
+            onError = {
+                fail(it.localizedMessage)
+            }
+        }
+    }
+
+    fun upLoadFile(file: File, success: () -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val sim = FileUtils.getSim()
+                val params = HashMap<String, Any>()
+                params["cityCode"] = BaseConfig.CITY_ID
+                params["devCode"] = sim
+                val requestBody: RequestBody = RequestBody.create("image/png".toMediaTypeOrNull(), file)
+                val body: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
+                val result = busRepository.upLoadFile(params, body)
+                if (result.code == SUCESS) {
+                } else {
+                    fail(result.msg)
+                }
+            }
+            onError = {
+                fail(it.localizedMessage)
+            }
+        }
+    }
 }
