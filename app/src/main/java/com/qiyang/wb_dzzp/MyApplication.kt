@@ -11,13 +11,12 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import com.qiyang.wb_dzzp.base.CrashHandlerUtil
-import com.qiyang.wb_dzzp.data.response.DeviceConfigBean
+import com.qiyang.wb_dzzp.data.DeviceConfigBean
+import com.qiyang.wb_dzzp.network.http.UrlConstant
 import com.qiyang.wb_dzzp.utils.UpDateUtils
 import okhttp3.ResponseBody
 import retrofit2.Response
 import java.io.*
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.system.exitProcess
 
 /**
@@ -30,7 +29,6 @@ import kotlin.system.exitProcess
  */
 @Suppress("UNREACHABLE_CODE")
 class MyApplication : Application() {
-
 
     companion object {
         private val TAG = "X_Meteor"
@@ -56,8 +54,7 @@ class MyApplication : Application() {
          * @author: Meteor
          */
         fun isApkInDebug(context: Context): Boolean {
-//            return UrlConstant.BASE_URL != "https://ncdzzp.diiing.cn/"
-            return UrlConstant.isDebug
+            return true
         }
 
     }

@@ -10,10 +10,9 @@ package com.qiyang.wb_dzzp
  */
 object BaseConfig {
 
-    val HANG_ZHOU_URL = "https://www.xiangbababus.com/api/safept/boardtest/route/55200521121020188000"
 
     //城市ID
-    val CITY_ID = 330100
+    val CITY_ID = "310000"
 
     //城市Name
     val CITY_NAME = "杭州"

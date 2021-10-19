@@ -6,7 +6,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 
-import com.qiyang.wb_dzzp.UrlConstant;
+import com.qiyang.wb_dzzp.network.http.UrlConstant;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;

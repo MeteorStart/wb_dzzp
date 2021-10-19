@@ -14,8 +14,8 @@ import android.os.IBinder;
 import com.google.gson.Gson;
 import com.kk.android.comvvmhelper.utils.LogUtils;
 import com.qiyang.wb_dzzp.MyApplication;
-import com.qiyang.wb_dzzp.UrlConstant;
-import com.qiyang.wb_dzzp.data.response.DeviceConfigBean;
+import com.qiyang.wb_dzzp.data.DeviceConfigBean;
+import com.qiyang.wb_dzzp.network.http.UrlConstant;
 import com.qiyang.wb_dzzp.utils.AppDateMgr;
 import com.qiyang.wb_dzzp.utils.SharedPreferencesUtils;
 
@@ -80,7 +80,7 @@ public class MQTTService extends Service {
     public void init() {
         // 服务器地址（协议+地址+端口号）
         String uri = host;
-        client = new MqttAndroidClient(this, uri, deviceConfigBean.getDeviceName());
+        client = new MqttAndroidClient(this, uri, deviceConfigBean.getStationName());
         // 设置MQTT监听并且接受消息
         client.setCallback(mqttCallback);
         conOpt = new MqttConnectOptions();
@@ -126,14 +126,14 @@ public class MQTTService extends Service {
     private String initWillMessgae() {
         WillMessage willMessage = new WillMessage();
         willMessage.setStatus("offline");
-        willMessage.setDeviceName(deviceConfigBean.getDeviceName());
+        willMessage.setDeviceName(deviceConfigBean.getStationName());
         Gson gson = new Gson();
         return gson.toJson(willMessage);
     }
 
     public String setHeartBeats(String onlineStatus) {
         HeartBeats beats = new HeartBeats();
-        beats.setDeviceName(deviceConfigBean.getDeviceName());
+        beats.setDeviceName(deviceConfigBean.getStationName());
         beats.setStatus(onlineStatus);
         beats.setTime(AppDateMgr.timeStamp2Date(System.currentTimeMillis() + "", ""));
         //beats.setLastTime(DateUtils.date2TimeStamp(System.currentTimeMillis()+"",""));
@@ -250,11 +250,11 @@ public class MQTTService extends Service {
      */
     private void subTopic() {
         try {
-            String subTop = "moquetteHz/" + deviceConfigBean.getDeviceName() + "/server_to_device";
+            String subTop = "moquetteHz/" + deviceConfigBean.getStationName() + "/server_to_device";
             client.subscribe(subTop, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    LogUtils.INSTANCE.i("sub success" + "--->subtopic：" + deviceConfigBean.getSubTopic() + "---->clientid：" + deviceConfigBean.getDeviceName());
+                    LogUtils.INSTANCE.i("sub success" + "--->subtopic：" + deviceConfigBean.getIotSubTopic() + "---->clientid：" + deviceConfigBean.getStationName());
                 }
 
                 @Override
@@ -320,10 +320,10 @@ public class MQTTService extends Service {
         public void connectionLost(Throwable arg0) {
             // 失去连接，重连
             LogUtils.INSTANCE.i("失去连接");
-            String message = "{\"deviceName\":\"" + deviceConfigBean.getDeviceName() + ",status:" + "offline" + "\"}";
+            String message = "{\"deviceName\":\"" + deviceConfigBean.getStationName() + ",status:" + "offline" + "\"}";
             Integer qos = 0;
             Boolean retained = false;
-            LogUtils.INSTANCE.i("{\"deviceName\":\"" + deviceConfigBean.getDeviceName() + "\"}");
+            LogUtils.INSTANCE.i("{\"deviceName\":\"" + deviceConfigBean.getStationName() + "\"}");
             conOpt.setWill(deadTopic, initWillMessgae().getBytes(), qos.intValue(), retained.booleanValue());
             isDisConnected = true;
             if (iOnLineCallBack != null) {
