@@ -1,6 +1,7 @@
 package com.qiyang.wb_dzzp.network.repository
 
 import com.qiyang.wb_dzzp.data.RegisterBody
+import com.qiyang.wb_dzzp.data.StationBody
 import com.qiyang.wb_dzzp.network.DzzpNetWork
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,6 +29,11 @@ class BusRepository {
 
     suspend fun getConfig(regId: String) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().getConfig(regId)
+        response
+    }
+
+    suspend fun station(body: StationBody) = withContext(Dispatchers.IO) {
+        val response = DzzpNetWork.getInstance().station(body)
         response
     }
 }

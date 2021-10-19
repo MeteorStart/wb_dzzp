@@ -1,9 +1,11 @@
 package com.qiyang.wb_dzzp.network
 
 import com.qiyang.wb_dzzp.data.RegisterBody
+import com.qiyang.wb_dzzp.data.StationBody
 import com.qiyang.wb_dzzp.network.http.RetrofitManager
 import com.qiyang.wb_dzzp.network.http.UrlConstant
 import com.qiyang.wb_dzzp.network.service.BusService
+import retrofit2.http.Body
 
 /**
  * @author: X_Meteor
@@ -42,6 +44,9 @@ class DzzpNetWork {
 
     //获取配置信息
     suspend fun getConfig(regId: String) = busService.getConfig(regId)
+
+    //获取实时数据
+    suspend fun station(@Body body: StationBody) = busService.station(body)
 
 }
 

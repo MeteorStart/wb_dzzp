@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.kk.android.comvvmhelper.extension.repeatLaunch
 import com.kk.android.comvvmhelper.extension.safeLaunch
 import com.qiyang.wb_dzzp.BaseConfig
-import com.qiyang.wb_dzzp.data.DeviceConfigBean
-import com.qiyang.wb_dzzp.data.RegisterBean
-import com.qiyang.wb_dzzp.data.RegisterBody
+import com.qiyang.wb_dzzp.BaseConfig.DEFUT_GET_STATION_TIME
+import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.SUCESS
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import kotlinx.coroutines.Job
@@ -44,14 +43,13 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
 
     fun getConfigCycle(regId: String, success: (DeviceConfigBean) -> Unit, showError: (String) -> Unit,
                        fail: (String) -> Unit) {
-        repeatJob = viewModelScope.repeatLaunch(10000, {
+        repeatJob = viewModelScope.repeatLaunch(DEFUT_GET_STATION_TIME, {
             getConfig(regId, success, showError, fail)
-        }, 12, 10000)
+        }, 60, DEFUT_GET_STATION_TIME)
     }
 
     fun getConfig(regId: String, success: (DeviceConfigBean) -> Unit, showError: (String) -> Unit,
                   fail: (String) -> Unit) {
-
         viewModelScope.safeLaunch {
             block = {
                 var result = busRepository.getConfig(regId)
@@ -66,6 +64,28 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             }
             onError = {
                 repeatJob?.cancel()
+                fail(it.localizedMessage)
+            }
+        }
+    }
+
+    fun stationCycle(body: StationBody, success: (StationBean) -> Unit, fail: (String) -> Unit) {
+        repeatJob = viewModelScope.repeatLaunch(DEFUT_GET_STATION_TIME, {
+            station(body, success, fail)
+        }, Int.MAX_VALUE, DEFUT_GET_STATION_TIME)
+    }
+
+    fun station(body: StationBody, success: (StationBean) -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val result = busRepository.station(body)
+                if (result.code == SUCESS) {
+
+                } else {
+                    fail(result.msg)
+                }
+            }
+            onError = {
                 fail(it.localizedMessage)
             }
         }

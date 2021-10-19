@@ -25,15 +25,8 @@ object BaseConfig {
 
     //默认滚动时间
     val DEFUT_SCOLL_TIME = 30L
-
-    //默认滚动时间
-    val LAYOUT_ID = "layoutId"
-
-    //默认二维码地址
-    val QR_URL = "qrUrl"
-
-    //上次上传的流量值
-    val OLD_UP_TRAFFIC = "oldUpTraffic"
+    //默认获取线路信息时间
+    val DEFUT_GET_STATION_TIME = 10L
 
     //数据正常跳转
     val NORMAL_STATE = 1
@@ -46,20 +39,6 @@ object BaseConfig {
 
     //网络异常
     val NO_NETWORK = 4
-
-    //天气信息
-    val WEATHER_INFO = "weather_info"
-
-    //设备连接状态
-    val MQTT_CONTENT_STATE = "mqtt_content_state"
-
-    //默认提示语
-    val DEFULT_SHOW_INFO = "共建文明城市    同享美丽杭州"
-    val SP_SHOW_INFO = "showInfo"
-
-    val BOTTOM_TITLE = "bottom_title"
-
-    val BOTTOM_URL = "bottom_url"
 
     //log文件最大长度
     val LOG_MAX_BYTES = 102400 * 1024 // 100M averages to a 4000 lines per file

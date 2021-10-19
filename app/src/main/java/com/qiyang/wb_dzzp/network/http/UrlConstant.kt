@@ -29,5 +29,17 @@ object UrlConstant {
     //获取当前配置
     const val GET_CONFIG = "/stationBoard/api/app/device/config/{regId}"
 
+    //获取实时数据
+    const val STATION = "/stationBoard/api/app/device/real/station"
+
+    //上送硬件信息
+    const val EXTEND = "/stationBoard/api/app/device/extend"
+
+    //重启接口
+    const val RESTART = "/stationBoard/api/app/device/restart"
+
+    //上传文件
+    const val UPLOAD = "/stationBoard/api/app/file/upload/ftp"
+
 
 }

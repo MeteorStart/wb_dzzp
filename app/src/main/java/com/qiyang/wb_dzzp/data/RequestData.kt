@@ -49,3 +49,15 @@ data class CurSetBody(
     val operationTime: String,
     val refreshTime: String
 )
+
+/**
+ * @name: 获取实时数据
+ * @description:
+ * @date: 10/19/21 3:26 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class StationBody(
+    val cityCode: String,
+    val devCode: String
+)

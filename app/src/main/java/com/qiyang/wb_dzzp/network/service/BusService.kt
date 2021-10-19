@@ -1,9 +1,6 @@
 package com.qiyang.wb_dzzp.network.service
 
-import com.qiyang.wb_dzzp.data.BaseBean
-import com.qiyang.wb_dzzp.data.DeviceConfigBean
-import com.qiyang.wb_dzzp.data.RegisterBean
-import com.qiyang.wb_dzzp.data.RegisterBody
+import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.UrlConstant
 import retrofit2.http.*
 
@@ -22,5 +19,8 @@ interface BusService {
     suspend fun register(@Body body: RegisterBody): BaseBean<RegisterBean>
 
     @GET(UrlConstant.GET_CONFIG)
-    suspend fun getConfig(@Path("regId") regId: String):BaseBean<DeviceConfigBean>
+    suspend fun getConfig(@Path("regId") regId: String): BaseBean<DeviceConfigBean>
+
+    @POST(UrlConstant.STATION)
+    suspend fun station(@Body body: StationBody): BaseBean<StationBean>
 }

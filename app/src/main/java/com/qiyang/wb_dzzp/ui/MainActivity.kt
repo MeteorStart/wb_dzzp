@@ -2,8 +2,10 @@ package com.qiyang.wb_dzzp.ui
 
 import android.os.Bundle
 import android.view.View
+import com.qiyang.wb_dzzp.BaseConfig
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
+import com.qiyang.wb_dzzp.data.StationBody
 import com.qiyang.wb_dzzp.databinding.ActivityMainBinding
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.FileUtils
@@ -52,16 +54,48 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val regId = FileUtils.getEquipId() + ""
 
         if (sim.isNotEmpty()) {
-
+            getStation(sim)
         } else if (regId.isNotEmpty()) {
-            mViewModel.getConfigCycle(regId, {
-                tv_error.visibility = View.GONE
-            }, {
-                tv_error.visibility = View.VISIBLE
-                tv_error.text = it
-            }, {
-                toast(it)
-            })
+            getConfig(regId)
         }
+    }
+
+    private fun getStation(sim: String) {
+        mViewModel.stationCycle(StationBody(BaseConfig.CITY_ID, sim), {
+
+        }, {
+
+        })
+    }
+
+    /**
+     * @description: 获取配置信息
+     * @date: 10/19/21 3:02 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun getConfig(regId: String) {
+        mViewModel.getConfigCycle(regId, {
+            tv_error.visibility = View.GONE
+            if (it.devCode.isNotEmpty()) {
+                FileUtils.saveSim(it.devCode)
+                getStation(it.devCode)
+            }
+        }, {
+            showErrorMsg(it)
+        }, {
+            toast(it)
+        })
+    }
+
+    /**
+     * @description: 显示错误信息
+     * @date: 10/19/21 4:37 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun showErrorMsg(it: String) {
+        tv_error.visibility = View.VISIBLE
+        tv_error.text = it
     }
 }

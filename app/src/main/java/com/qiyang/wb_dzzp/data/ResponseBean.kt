@@ -132,3 +132,78 @@ data class Version(
     val picture: String,
     val video: String
 )
+
+/**
+ * @name: 实时数据
+ * @param devCode 设备编号
+ * @param routes 线路列表
+ * @param station 当前站点信息
+ * @param status 设备状态
+ * @date: 10/19/21 3:30 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class StationBean(
+    val devCode: String,
+    val routes: List<Route>,
+    val station: Station,
+    val status: String
+)
+
+/**
+ * @name: 线路详情
+ * @param direction  方向：0-上行 1-下行
+ * @param endStationName  终点站站名
+ * @param endTime  末班时间
+ * @param nearestBusInfo  	最近一班车情况说明
+ * @param price  票价
+ * @param routeName  	线路名
+ * @param routeNum  线路编号
+ * @param runFlag  运营状态：true-运营
+ * @param startStationName  起点站站名
+ * @param startTime  首班时间
+ * @param stations  线路下站点信息（已排序）
+ * @date: 10/19/21 3:32 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class Route(
+    val direction: String,
+    val endStationName: String,
+    val endTime: String,
+    val nearestBusInfo: String,
+    val price: String,
+    val routeName: String,
+    val routeNum: String,
+    val runFlag: Boolean,
+    val startStationName: String,
+    val startTime: String,
+    val stations: List<Station>
+)
+
+/**
+ * @name: 线路下站点信息（已排序）
+ * @param buses  站点下车辆列表
+ * @param devStationFlag  是否当前站点：true-是
+ * @param stationName  站点名称
+ * @param stationNum  站点编号
+ * @date: 10/19/21 3:34 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class Station(
+    val buses: List<Buse>,
+    val devStationFlag: Boolean,
+    val stationName: String,
+    val stationNum: String
+)
+
+/**
+ * @param busNum 车辆编号
+ * @date: 10/19/21 3:36 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class Buse(
+    val busNum: String
+)
