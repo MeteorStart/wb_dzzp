@@ -57,14 +57,31 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private fun initData() {
         val sim = FileUtils.getSim() + ""
         val regId = FileUtils.getEquipId() + ""
-
-        if (sim.isNotEmpty()) {
-            getStation(sim)
-            getWeather(sim)
-        } else if (regId.isNotEmpty()) {
-            getConfig(regId)
+        when {
+            sim.isNotEmpty() -> {
+                getStation(sim)
+                getWeather(sim)
+                restart(sim)
+            }
+            regId.isNotEmpty() -> {
+                getConfig(regId)
+            }
+            else -> {
+                showErrorMsg("网络异常，请检查网络！")
+            }
         }
+    }
 
+    /**
+     * @description: 上传重启记录
+     * @date: 10/20/21 3:19 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun restart(sim: String) {
+        mViewModel.restart(sim) {
+            toast(it)
+        }
     }
 
     /**

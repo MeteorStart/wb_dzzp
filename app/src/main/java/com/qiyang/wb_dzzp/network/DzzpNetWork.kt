@@ -37,11 +37,7 @@ class DzzpNetWork {
         }
     }
 
-    fun clear() {
-        network = null
-    }
-
-    //打卡
+    //注册设备
     suspend fun register(body: RegisterBody) = busService.register(body)
 
     //获取配置信息
@@ -70,7 +66,6 @@ class DzzpNetWork {
 
     //获取天气
     suspend fun getWeather(@Body body: GetWeatherBody) = busService.getWeather(body)
-
 
     //上传文件
     suspend fun upLoadFile(

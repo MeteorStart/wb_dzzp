@@ -21,7 +21,7 @@ import java.util.*
 
 /**
  * @author: X_Meteor
- * @description: 类描述
+ * @description: 首页ViewModel
  * @version: V_1.0.0
  * @date: 10/18/21 10:30 AM
  * @company:
@@ -32,6 +32,15 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
     val temperature = MutableLiveData<String>()
     val weather = MutableLiveData<String>()
 
+    //循环请求协程
+    var repeatJob: Job? = null
+
+    /**
+     * @description: 设备注册
+     * @date: 10/20/21 3:13 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun register(seqCode: String, success: (RegisterBean) -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
@@ -48,8 +57,12 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
-    var repeatJob: Job? = null
-
+    /**
+     * @description: 循环获取配置信息
+     * @date: 10/20/21 3:14 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun getConfigCycle(
         regId: String, success: (DeviceConfigBean) -> Unit, showError: (String) -> Unit,
         fail: (String) -> Unit
@@ -59,6 +72,12 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }, 60, DEFUT_GET_STATION_TIME)
     }
 
+    /**
+     * @description: 获取配置信息
+     * @date: 10/20/21 3:14 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun getConfig(
         regId: String, success: (DeviceConfigBean) -> Unit, showError: (String) -> Unit,
         fail: (String) -> Unit
@@ -82,12 +101,24 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    /**
+     * @description: 循环获取线路信息
+     * @date: 10/20/21 3:14 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun stationCycle(body: StationBody, success: (StationBean) -> Unit, fail: (String) -> Unit) {
         repeatJob = viewModelScope.repeatLaunch(DEFUT_GET_STATION_TIME, {
             station(body, success, fail)
         }, Int.MAX_VALUE, DEFUT_GET_STATION_TIME)
     }
 
+    /**
+     * @description: 获取线路信息
+     * @date: 10/20/21 3:14 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun station(body: StationBody, success: (StationBean) -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
@@ -104,6 +135,12 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    /**
+     * @description: 上送硬件信息
+     * @date: 10/20/21 3:15 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun extend(body: ExtendBody, success: () -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
@@ -120,6 +157,12 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    /**
+     * @description: 上传设置信息
+     * @date: 10/20/21 3:15 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun curSet(body: CurSetBody, success: () -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
@@ -136,6 +179,12 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    /**
+     * @description: 上传版本信息
+     * @date: 10/20/21 3:15 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun curVersion(body: CurVersionBody, success: () -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
@@ -152,6 +201,12 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    /**
+     * @description: 获取天气
+     * @date: 10/20/21 3:15 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun getWeather(sim: String, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
@@ -170,10 +225,16 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
-    fun restart(body: RestartBody, success: () -> Unit, fail: (String) -> Unit) {
+    /**
+     * @description: 重启调用
+     * @date: 10/20/21 3:15 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    fun restart(sim: String, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
-                val result = busRepository.restart(body)
+                val result = busRepository.restart(RestartBody(BaseConfig.CITY_ID, sim))
                 if (result.code == SUCESS) {
 
                 } else {
@@ -186,6 +247,12 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    /**
+     * @description: 上传截图信息
+     * @date: 10/20/21 3:15 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun screenshot(body: UpHeartBody, success: () -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
@@ -202,6 +269,12 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    /**
+     * @description: 上传日志信息
+     * @date: 10/20/21 3:16 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     fun logUp(body: UpHeartBody, success: () -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
