@@ -2,7 +2,7 @@ package com.qiyang.wb_dzzp.ui
 
 import android.os.Bundle
 import android.view.View
-import com.qiyang.wb_dzzp.BaseConfig
+import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.data.StationBody
@@ -14,6 +14,7 @@ import com.qiyang.wb_dzzp.utils.RecycleViewUtils
 import com.qiyang.wb_dzzp.viewmodel.MainModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
+import java.io.File
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
@@ -55,15 +56,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val regId = FileUtils.getEquipId() + ""
 
         if (sim.isNotEmpty()) {
-//            getStation(sim)
+            getStation(sim)
         } else if (regId.isNotEmpty()) {
             getConfig(regId)
         }
-        val file = FileHelper().getFile("4.png")
-        if (file!=null){
-            mViewModel.upLoadFile(file,{
 
-            },{
+    }
+
+    private fun uploadFile(fileName: String) {
+        val file = FileHelper().getFile(fileName)
+        if (file != null) {
+            mViewModel.upLoadFile(file, {
+
+            }, {
 
             })
         }

@@ -10,9 +10,9 @@ import com.kk.android.comvvmhelper.utils.LogUtils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
+import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.base.CrashHandlerUtil
 import com.qiyang.wb_dzzp.data.DeviceConfigBean
-import com.qiyang.wb_dzzp.network.http.UrlConstant
 import com.qiyang.wb_dzzp.utils.UpDateUtils
 import okhttp3.ResponseBody
 import retrofit2.Response

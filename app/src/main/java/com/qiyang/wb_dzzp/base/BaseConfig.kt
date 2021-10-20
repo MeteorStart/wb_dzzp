@@ -1,4 +1,4 @@
-package com.qiyang.wb_dzzp
+package com.qiyang.wb_dzzp.base
 
 /**
  * @author: X_Meteor
@@ -9,7 +9,6 @@ package com.qiyang.wb_dzzp
  * @email: lx802315@163.com
  */
 object BaseConfig {
-
 
     //城市ID
     val CITY_ID = "310000"
@@ -24,9 +23,9 @@ object BaseConfig {
     val STAND_TIME = "05|00|22|30"
 
     //默认滚动时间
-    val DEFUT_SCOLL_TIME = 30L
+    val DEFUT_SCOLL_TIME = 30000L
     //默认获取线路信息时间
-    val DEFUT_GET_STATION_TIME = 10L
+    val DEFUT_GET_STATION_TIME = 10000L
 
     //数据正常跳转
     val NORMAL_STATE = 1

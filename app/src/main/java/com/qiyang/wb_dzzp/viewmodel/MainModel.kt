@@ -4,14 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kk.android.comvvmhelper.extension.repeatLaunch
 import com.kk.android.comvvmhelper.extension.safeLaunch
-import com.qiyang.wb_dzzp.BaseConfig
-import com.qiyang.wb_dzzp.BaseConfig.DEFUT_GET_STATION_TIME
+import com.qiyang.wb_dzzp.base.BaseConfig
+import com.qiyang.wb_dzzp.base.BaseConfig.DEFUT_GET_STATION_TIME
 import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.SUCESS
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.FileUtils
 import kotlinx.coroutines.Job
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

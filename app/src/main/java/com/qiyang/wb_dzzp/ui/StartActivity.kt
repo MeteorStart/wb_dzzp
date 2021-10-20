@@ -4,11 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.kk.android.comvvmhelper.utils.LogUtils
-import com.qiyang.wb_dzzp.BaseConfig
+import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.databinding.ActivityStartBinding
-import com.qiyang.wb_dzzp.network.http.RetrofitManager
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.AppDateMgr
 import com.qiyang.wb_dzzp.utils.AppSysMgr
