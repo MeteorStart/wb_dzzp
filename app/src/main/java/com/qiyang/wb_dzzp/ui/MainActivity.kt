@@ -1,10 +1,13 @@
 package com.qiyang.wb_dzzp.ui
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
-import com.qiyang.wb_dzzp.base.BaseConfig
+import android.widget.MediaController
+import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
+import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.data.StationBody
 import com.qiyang.wb_dzzp.databinding.ActivityMainBinding
 import com.qiyang.wb_dzzp.network.repository.BusRepository
@@ -38,6 +41,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun initActivity(savedInstanceState: Bundle?) {
         NavigationBarStatusBar(this, true)
         mBinding.model = mViewModel
+        initVideoView("")
         initRecy()
         initData()
     }
@@ -149,6 +153,59 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }, {
 
             })
+        }
+    }
+
+    var mediaController: MediaController? = null
+
+    fun initVideoView(url: String) {
+        video.pause()
+        video.stopPlayback()
+        val file = File(url)
+        if (file.exists()) {
+            video.setVideoPath(url)
+        } else {
+            video.setVideoPath(
+                "android.resource://" + this.packageName.toString() + "/" + R.raw.mov1
+            )
+        }
+        mediaController = MediaController(this)
+        mediaController?.visibility = View.GONE
+        video.setMediaController(mediaController)
+        video.requestFocus()
+        video.setZOrderMediaOverlay(true)
+        video.start()
+        video.setOnPreparedListener { mediaPlayer ->
+            mediaPlayer.start()
+            mediaPlayer.isLooping = true
+        }
+        video.setOnErrorListener(MediaPlayer.OnErrorListener { mediaPlayer, what, extra ->
+            LogUtils.e("视频播放错误码$what")
+            restartVideo(url)
+            true
+        })
+    }
+
+    private fun restartVideo(url: String) {
+        try {
+            val proc = Runtime.getRuntime().exec(arrayOf("su", "-c", "reboot ")) //关机
+            proc.waitFor()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
+    fun notifyVideo() {
+        LogUtils.e("暂停视频播放")
+        if (video != null) {
+            video.suspend()
+            video.stopPlayback()
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (video != null) {
+            video.suspend()
         }
     }
 }

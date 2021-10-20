@@ -18,7 +18,14 @@ data class RegisterBody(
 
 /**
  * @name: 上送版本信息
- * @description:
+ * @param app
+ * @param bottom
+ * @param cityCode
+ * @param devCode
+ * @param hide
+ * @param notice
+ * @param picture
+ * @param video
  * @date: 10/18/21 1:56 PM
  * @author: Meteor
  * @email: lx802315@163.com
@@ -36,7 +43,13 @@ data class CurVersionBody(
 
 /**
  * @name: 上送设置信息
- * @description:
+ * @param cityCode 城市编号
+ * @param devCode 设备编号
+ * @param hardwareSend 硬件信息上送间隔设置（分钟）
+ * @param lightTime 补光灯时间（xx|xx|xx|xx）
+ * @param onFanTemp 风扇温度阈值设置（摄氏度）
+ * @param operationTime 运营时间（xx|xx|xx|xx）
+ * @param refreshTime 刷新间隔（秒）
  * @date: 10/18/21 1:57 PM
  * @author: Meteor
  * @email: lx802315@163.com
@@ -53,7 +66,8 @@ data class CurSetBody(
 
 /**
  * @name: 获取实时数据
- * @description:
+ * @param cityCode 城市编码
+ * @param devCode 设备编号
  * @date: 10/19/21 3:26 PM
  * @author: Meteor
  * @email: lx802315@163.com

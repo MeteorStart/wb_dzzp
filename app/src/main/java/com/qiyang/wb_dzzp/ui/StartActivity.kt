@@ -7,10 +7,12 @@ import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
+import com.qiyang.wb_dzzp.data.CurVersionBody
 import com.qiyang.wb_dzzp.databinding.ActivityStartBinding
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.AppDateMgr
 import com.qiyang.wb_dzzp.utils.AppSysMgr
+import com.qiyang.wb_dzzp.utils.AppUtils
 import com.qiyang.wb_dzzp.utils.FileUtils
 import com.qiyang.wb_dzzp.utils.FileUtils.Companion.saveDevId
 import com.qiyang.wb_dzzp.utils.FileUtils.Companion.saveEquipId
@@ -26,14 +28,13 @@ class StartActivity : BaseActivity<ActivityStartBinding>() {
     override fun getLayoutId(): Int = R.layout.activity_start
 
     override fun initActivity(savedInstanceState: Bundle?) {
-
+        val appVersion = AppUtils.getVerName(this)
         //判断是否注册过
         if (TextUtils.isEmpty(FileUtils.getSim())) {
             onRegister()
         } else {
             jumpToMain(BaseConfig.NORMAL_STATE)
         }
-
     }
 
     /**
