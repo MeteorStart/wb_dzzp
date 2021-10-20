@@ -14,7 +14,7 @@ object BaseConfig {
     val CITY_ID = "310000"
 
     //城市Name
-    val CITY_NAME = "杭州"
+    val CITY_NAME = "上海"
 
     //默认补光灯开启时间
     val DEFUT_OFF_ON_TIME = "05|30|06|00|18|30|20|30"

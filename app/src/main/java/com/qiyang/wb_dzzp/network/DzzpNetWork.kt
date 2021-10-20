@@ -59,6 +59,19 @@ class DzzpNetWork {
     //上送当前版本号
     suspend fun curVersion(@Body body: CurVersionBody) = busService.curVersion(body)
 
+    //重启
+    suspend fun restart(@Body body: RestartBody) = busService.restart(body)
+
+    //上传截图
+    suspend fun screenshot(@Body body: UpHeartBody) = busService.screenshot(body)
+
+    //上传日志
+    suspend fun logUp(@Body body: UpHeartBody) = busService.logUp(body)
+
+    //获取天气
+    suspend fun getWeather(@Body body: GetWeatherBody) = busService.getWeather(body)
+
+
     //上传文件
     suspend fun upLoadFile(
         @QueryMap map: MutableMap<String, Any>,

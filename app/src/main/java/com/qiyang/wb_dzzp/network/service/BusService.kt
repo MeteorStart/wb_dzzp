@@ -34,6 +34,18 @@ interface BusService {
     @POST(UrlConstant.CUR_VERSION)
     suspend fun curVersion(@Body body: CurVersionBody): BaseBean<Any>
 
+    @POST(UrlConstant.RESTART)
+    suspend fun restart(@Body body: RestartBody): BaseBean<Any>
+
+    @POST(UrlConstant.SCREENSHOT)
+    suspend fun screenshot(@Body body: UpHeartBody): BaseBean<Any>
+
+    @POST(UrlConstant.LOG_UP)
+    suspend fun logUp(@Body body: UpHeartBody): BaseBean<Any>
+
+    @POST(UrlConstant.GET_WEATHER)
+    suspend fun getWeather(@Body body: GetWeatherBody): BaseBean<WeatherBean>
+
     //上传单张图片
     @Multipart
     @JvmSuppressWildcards

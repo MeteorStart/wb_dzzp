@@ -207,3 +207,43 @@ data class Station(
 data class Buse(
     val busNum: String
 )
+
+/**
+ * @name: 设备重启
+ * @param cityCode 城市编号
+ * @param devCode 设备编号
+ * @date: 10/20/21 2:37 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class RestartBody(
+    val cityCode: String,
+    val devCode: String
+)
+/**
+ * @name: 天气数据
+ * @param adcode 区域编码
+ * @param city 城市名
+ * @param humidity 空气湿度
+ * @param province 省份名
+ * @param reporttime 数据发布的时间
+ * @param temperature 实时气温（摄氏度）
+ * @param weather 天气现象（汉字描述）
+ * @param winddirection 风向描述
+ * @param windpower 风力级别（级）
+ * @date: 10/20/21 2:21 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class WeatherBean(
+    val adcode: String,
+    val city: String,
+    val humidity: String,
+    val province: String,
+    val reporttime: String,
+    val temperature: String,
+    val weather: String,
+    val winddirection: String,
+    val windpower: String
+)
+

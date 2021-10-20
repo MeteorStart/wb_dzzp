@@ -41,5 +41,14 @@ object UrlConstant {
     //上传文件
     const val UPLOAD = "/stationBoard/api/app/file/upload/ftp"
 
+    //上传文件
+    const val SCREENSHOT = "/stationBoard/api/app/device/attach/screenshot"
+
+    //上传文件
+    const val LOG_UP = "/stationBoard/api/app/device/attach/logUp"
+
+    //获取天气
+    const val GET_WEATHER = "/stationBoard/api/app/weather/getWeather"
+
 
 }

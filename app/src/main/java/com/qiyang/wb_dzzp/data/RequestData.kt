@@ -115,3 +115,33 @@ data class ExtendBody(
     val temp: Int,
     val useBattery: String
 )
+
+/**
+ * @name: 获取天气
+ * @param ammapAdcode 高德城市adcode
+ * @param cityCode 城市编号
+ * @param devCode 设备编号
+ * @date: 10/20/21 2:09 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class GetWeatherBody(
+    val ammapAdcode: String,
+    val cityCode: String,
+    val devCode: String
+)
+
+/**
+ * @name: 上传文件心跳
+ * @param cityCode 城市编号
+ * @param devCode 设备编号
+ * @param url 文件地址
+ * @date: 10/20/21 2:25 PM
+ * @author: Meteor
+ * @email: lx802315@163.com
+ */
+data class UpHeartBody(
+    val cityCode: String,
+    val devCode: String,
+    val url: String
+)

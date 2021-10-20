@@ -55,8 +55,30 @@ class BusRepository {
         response
     }
 
-    suspend fun upLoadFile(@QueryMap map: MutableMap<String, Any>,
-                           @Part file: MultipartBody.Part) = withContext(Dispatchers.IO) {
+    suspend fun getWeather(@Body body: GetWeatherBody) = withContext(Dispatchers.IO) {
+        val response = DzzpNetWork.getInstance().getWeather(body)
+        response
+    }
+
+    suspend fun restart(@Body body: RestartBody) = withContext(Dispatchers.IO) {
+        val response = DzzpNetWork.getInstance().restart(body)
+        response
+    }
+
+    suspend fun screenshot(@Body body: UpHeartBody) = withContext(Dispatchers.IO) {
+        val response = DzzpNetWork.getInstance().screenshot(body)
+        response
+    }
+
+    suspend fun logUp(@Body body: UpHeartBody) = withContext(Dispatchers.IO) {
+        val response = DzzpNetWork.getInstance().logUp(body)
+        response
+    }
+
+    suspend fun upLoadFile(
+        @QueryMap map: MutableMap<String, Any>,
+        @Part file: MultipartBody.Part
+    ) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().upLoadFile(map, file)
         response
     }

@@ -37,43 +37,54 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun initActivity(savedInstanceState: Bundle?) {
         NavigationBarStatusBar(this, true)
+        mBinding.model = mViewModel
         initRecy()
         initData()
     }
 
     private fun initRecy() {
-        recy_main.layoutManager = RecycleViewUtils.getVerticalLayoutManagerNoDecoration(this, recy_main)
+        recy_main.layoutManager =
+            RecycleViewUtils.getVerticalLayoutManagerNoDecoration(this, recy_main)
         recy_main.adapter = mMainAdapter
-    }
 
-    private fun initData() {
         for (i in 0..10) {
             dataList.add(i.toString())
         }
         mMainAdapter.notifyDataSetChanged()
 
+    }
+
+    private fun initData() {
         val sim = FileUtils.getSim() + ""
         val regId = FileUtils.getEquipId() + ""
 
         if (sim.isNotEmpty()) {
             getStation(sim)
+            getWeather(sim)
         } else if (regId.isNotEmpty()) {
             getConfig(regId)
         }
 
     }
 
-    private fun uploadFile(fileName: String) {
-        val file = FileHelper().getFile(fileName)
-        if (file != null) {
-            mViewModel.upLoadFile(file, {
-
-            }, {
-
-            })
+    /**
+     * @description: 获取天气
+     * @date: 10/20/21 2:52 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun getWeather(sim: String) {
+        mViewModel.getWeather(sim) {
+            toast(it)
         }
     }
 
+    /**
+     * @description: 获取站点实时数据
+     * @date: 10/20/21 2:49 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
     private fun getStation(sim: String) {
         mViewModel.stationCycle(StationBody(BaseConfig.CITY_ID, sim), {
 
@@ -111,5 +122,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private fun showErrorMsg(it: String) {
         tv_error.visibility = View.VISIBLE
         tv_error.text = it
+    }
+
+    private fun uploadFile(fileName: String) {
+        val file = FileHelper().getFile(fileName)
+        if (file != null) {
+            mViewModel.upLoadFile(file, {
+
+            }, {
+
+            })
+        }
     }
 }

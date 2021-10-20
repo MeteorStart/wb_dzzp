@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="model"
+            type="com.qiyang.wb_dzzp.viewmodel.MainModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,19 +35,18 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="38.5dp"
             android:layout_marginTop="15dp"
-            android:text="25°"
+            android:text="@{model.temperature}"
             android:textColor="@color/white"
             android:textSize="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_notice" />
-
 
         <TextView
             android:id="@+id/tv_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="小雨转小到中雨"
+            android:text="@{model.weather}"
             android:textColor="@color/white"
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_weather_temp"
