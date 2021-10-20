@@ -202,6 +202,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             video.stopPlayback()
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         if (video != null) {

@@ -40,46 +40,51 @@ class BusRepository {
         response
     }
 
-    suspend fun extend(@Body body: ExtendBody) = withContext(Dispatchers.IO) {
+    suspend fun extend(body: ExtendBody) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().extend(body)
         response
     }
 
-    suspend fun curSet(@Body body: CurSetBody) = withContext(Dispatchers.IO) {
+    suspend fun curSet(body: CurSetBody) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().curSet(body)
         response
     }
 
-    suspend fun curVersion(@Body body: CurVersionBody) = withContext(Dispatchers.IO) {
+    suspend fun curVersion(body: CurVersionBody) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().curVersion(body)
         response
     }
 
-    suspend fun getWeather(@Body body: GetWeatherBody) = withContext(Dispatchers.IO) {
+    suspend fun getWeather(body: GetWeatherBody) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().getWeather(body)
         response
     }
 
-    suspend fun restart(@Body body: RestartBody) = withContext(Dispatchers.IO) {
+    suspend fun restart(body: RestartBody) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().restart(body)
         response
     }
 
-    suspend fun screenshot(@Body body: UpHeartBody) = withContext(Dispatchers.IO) {
+    suspend fun screenshot(body: UpHeartBody) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().screenshot(body)
         response
     }
 
-    suspend fun logUp(@Body body: UpHeartBody) = withContext(Dispatchers.IO) {
+    suspend fun logUp(body: UpHeartBody) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().logUp(body)
         response
     }
 
     suspend fun upLoadFile(
-        @QueryMap map: MutableMap<String, Any>,
-        @Part file: MultipartBody.Part
+        map: MutableMap<String, Any>,
+        file: MultipartBody.Part
     ) = withContext(Dispatchers.IO) {
         val response = DzzpNetWork.getInstance().upLoadFile(map, file)
+        response
+    }
+
+    suspend fun download(fileUrl: String) = withContext(Dispatchers.IO) {
+        val response = DzzpNetWork.getInstance().download(fileUrl)
         response
     }
 }

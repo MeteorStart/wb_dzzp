@@ -3,6 +3,8 @@ package com.qiyang.wb_dzzp.network.service
 import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.UrlConstant
 import okhttp3.MultipartBody
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.*
 
 
@@ -55,4 +57,7 @@ interface BusService {
         @Part file: MultipartBody.Part
     ): BaseBean<Any>
 
+    @GET
+    @Streaming
+    suspend fun download(@Url fileUrl: String): Response<ResponseBody>
 }

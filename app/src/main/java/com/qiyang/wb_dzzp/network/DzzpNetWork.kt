@@ -8,6 +8,7 @@ import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.Part
 import retrofit2.http.QueryMap
+import retrofit2.http.Url
 
 /**
  * @author: X_Meteor
@@ -69,9 +70,14 @@ class DzzpNetWork {
 
     //上传文件
     suspend fun upLoadFile(
-        @QueryMap map: MutableMap<String, Any>,
-        @Part file: MultipartBody.Part
+        map: MutableMap<String, Any>,
+        file: MultipartBody.Part
     ) = busService.upLoadFile(map, file)
+
+    //下载文件
+    suspend fun download(
+        fileUrl: String
+    ) = busService.download(fileUrl)
 
 }
 

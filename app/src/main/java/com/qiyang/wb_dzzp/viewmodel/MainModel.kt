@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kk.android.comvvmhelper.extension.repeatLaunch
 import com.kk.android.comvvmhelper.extension.safeLaunch
+import com.kk.android.comvvmhelper.utils.LogUtils
+import com.qiyang.wb_dzzp.MyApplication
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.base.BaseConfig.DEFUT_GET_STATION_TIME
 import com.qiyang.wb_dzzp.data.*
@@ -313,4 +315,19 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             }
         }
     }
+
+    fun download(fileUrl: String, success: () -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val result = busRepository.download(fileUrl)
+                LogUtils.d("1")
+                var file = File("sdcard/update.apk")
+                MyApplication.myApplication.writeFile2Disk(result, file)
+            }
+            onError = {
+
+            }
+        }
+    }
+
 }
