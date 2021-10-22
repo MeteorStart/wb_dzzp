@@ -1,6 +1,6 @@
 package com.qiyang.wb_dzzp.data
-import com.google.gson.annotations.SerializedName
 
+import com.google.gson.annotations.SerializedName
 
 
 /**
@@ -11,10 +11,10 @@ import com.google.gson.annotations.SerializedName
  * @email: lx802315@163.com
  */
 data class BaseBean<T>(
-        val code: String,
-        val data: T,
-        val msg: String,
-        val total: Int
+    val code: String,
+    val data: T,
+    val msg: String,
+    val total: Int
 )
 
 /**
@@ -36,9 +36,9 @@ data class RegisterBean(
  * @param iotEndPoint iot接入点地址
  * @param iotProductKey iot登录key
  * @param iotProductSecret iot登录secret
- * @param iotPubTopic 	iot消息发送Topic
- * @param iotSubTopic 	iot消息接收Topic列表
- * @param latitude 	纬度
+ * @param iotPubTopic    iot消息发送Topic
+ * @param iotSubTopic    iot消息接收Topic列表
+ * @param latitude    纬度
  * @param longitude 经度
  * @param regId 主板id
  * @param state 状态
@@ -155,24 +155,28 @@ data class StationBean(
  * @param direction  方向：0-上行 1-下行
  * @param endStationName  终点站站名
  * @param endTime  末班时间
- * @param nearestBusInfo  	最近一班车情况说明
  * @param price  票价
- * @param routeName  	线路名
+ * @param routeName    线路名
  * @param routeNum  线路编号
  * @param runFlag  运营状态：true-运营
  * @param startStationName  起点站站名
  * @param startTime  首班时间
  * @param stations  线路下站点信息（已排序）
+ * @param dispatchTime  发车时间
+ * @param distanceStations  距离本站n站
+ * @param realStatus  实时数据状态
  * @date: 10/19/21 3:32 PM
  * @author: Meteor
  * @email: lx802315@163.com
  */
 data class Route(
     val direction: String,
+    val dispatchTime: String,
+    val distanceStations: Int,
     val endStationName: String,
     val endTime: String,
-    val nearestBusInfo: String,
     val price: String,
+    val realStatus: String,
     val routeName: String,
     val routeNum: String,
     val runFlag: Boolean,
@@ -180,7 +184,6 @@ data class Route(
     val startTime: String,
     val stations: List<Station>
 )
-
 /**
  * @name: 线路下站点信息（已排序）
  * @param buses  站点下车辆列表
@@ -220,6 +223,7 @@ data class RestartBody(
     val cityCode: String,
     val devCode: String
 )
+
 /**
  * @name: 天气数据
  * @param adcode 区域编码

@@ -112,7 +112,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
     fun stationCycle(body: StationBody, success: (StationBean) -> Unit, fail: (String) -> Unit) {
         repeatJob = viewModelScope.repeatLaunch(DEFUT_GET_STATION_TIME, {
             station(body, success, fail)
-        }, Int.MAX_VALUE, DEFUT_GET_STATION_TIME)
+        }, Int.MAX_VALUE, 0)
     }
 
     /**
@@ -126,7 +126,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             block = {
                 val result = busRepository.station(body)
                 if (result.code == SUCESS) {
-
+                    success(result.data)
                 } else {
                     fail(result.msg)
                 }

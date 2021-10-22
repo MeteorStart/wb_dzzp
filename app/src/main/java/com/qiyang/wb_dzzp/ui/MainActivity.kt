@@ -8,6 +8,7 @@ import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.base.BaseConfig
+import com.qiyang.wb_dzzp.data.Route
 import com.qiyang.wb_dzzp.data.StationBody
 import com.qiyang.wb_dzzp.databinding.ActivityMainBinding
 import com.qiyang.wb_dzzp.network.repository.BusRepository
@@ -21,7 +22,7 @@ import java.io.File
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    var dataList = ArrayList<String>()
+    var dataList = ArrayList<Route>()
     val mMainAdapter = MainAdapter(R.layout.item_bus, dataList)
 
     //错误编号
@@ -50,12 +51,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         recy_main.layoutManager =
             RecycleViewUtils.getVerticalLayoutManagerNoDecoration(this, recy_main)
         recy_main.adapter = mMainAdapter
-
-        for (i in 0..10) {
-            dataList.add(i.toString())
-        }
-        mMainAdapter.notifyDataSetChanged()
-
     }
 
     private fun initData() {
@@ -108,9 +103,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
      */
     private fun getStation(sim: String) {
         mViewModel.stationCycle(StationBody(BaseConfig.CITY_ID, sim), {
-
+            mMainAdapter.setNewData(it.routes)
         }, {
-
+            toast(it)
         })
     }
 
