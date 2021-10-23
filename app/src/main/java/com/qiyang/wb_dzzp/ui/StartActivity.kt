@@ -1,8 +1,13 @@
 package com.qiyang.wb_dzzp.ui
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
+import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.R
@@ -18,8 +23,16 @@ import com.qiyang.wb_dzzp.utils.FileUtils.Companion.saveDevId
 import com.qiyang.wb_dzzp.utils.FileUtils.Companion.saveEquipId
 import com.qiyang.wb_dzzp.utils.FileUtils.Companion.saveTime
 import com.qiyang.wb_dzzp.viewmodel.MainModel
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
+import pub.devrel.easypermissions.PermissionRequest
 
-class StartActivity : BaseActivity<ActivityStartBinding>() {
+class StartActivity : BaseActivity<ActivityStartBinding>() , EasyPermissions.PermissionCallbacks {
+
+    companion object {
+        const val REQUEST_PERMISSION = 0x01
+    }
 
     private val mViewModel: MainModel by lazy {
         MainModel(BusRepository.instance)
@@ -28,12 +41,47 @@ class StartActivity : BaseActivity<ActivityStartBinding>() {
     override fun getLayoutId(): Int = R.layout.activity_start
 
     override fun initActivity(savedInstanceState: Bundle?) {
-        val appVersion = AppUtils.getVerName(this)
-        //判断是否注册过
-        if (TextUtils.isEmpty(FileUtils.getSim())) {
-            onRegister()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            permission()
+        }else{
+            val appVersion = AppUtils.getVerName(this)
+            //判断是否注册过
+            if (TextUtils.isEmpty(FileUtils.getSim())) {
+                onRegister()
+            } else {
+                jumpToMain(BaseConfig.NORMAL_STATE)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    @AfterPermissionGranted(REQUEST_PERMISSION)
+    private fun permission() {
+        val perms = arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+        )
+        if (EasyPermissions.hasPermissions(this, *perms)) {
+            val appVersion = AppUtils.getVerName(this)
+            //判断是否注册过
+            if (TextUtils.isEmpty(FileUtils.getSim())) {
+                onRegister()
+            } else {
+                jumpToMain(BaseConfig.NORMAL_STATE)
+            }
         } else {
-            jumpToMain(BaseConfig.NORMAL_STATE)
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(
+                PermissionRequest.Builder(
+                    this,
+                    REQUEST_PERMISSION,
+                    *perms
+                )
+                    .setRationale("Dear users\n need to apply for storage Permissions for\n your better use of this application")
+                    .setNegativeButtonText("NO")
+                    .setPositiveButtonText("YES")
+                    .build()
+            )
         }
     }
 
@@ -97,5 +145,41 @@ class StartActivity : BaseActivity<ActivityStartBinding>() {
         startActivity(intent)
 
         finish()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.e("Granted", "onRequestPermissionsResult:$requestCode")
+        if (requestCode == 1) {
+            val appVersion = AppUtils.getVerName(this)
+            //判断是否注册过
+            if (TextUtils.isEmpty(FileUtils.getSim())) {
+                onRegister()
+            } else {
+                jumpToMain(BaseConfig.NORMAL_STATE)
+            }
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, @NonNull perms: List<String?>) {
+        Log.e("Granted", "onPermissionsGranted:$requestCode:$perms")
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, @NonNull perms: List<String?>) {
+        Log.e("Denied", "onPermissionsDenied:$requestCode:$perms")
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            AppSettingsDialog.Builder(this)
+                .setTitle("Tips")
+                .setRationale("Dear users, in order to make better use of this application, you need to apply for storage permissions.")
+                .setNegativeButton("Refuse")
+                .setPositiveButton("Go To Set")
+                .setRequestCode(0x001)
+                .build()
+                .show()
+        }
     }
 }

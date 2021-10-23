@@ -20,12 +20,12 @@
         <TextView
             android:id="@+id/tv_notice"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="60dp"
             android:background="@drawable/bg_bottom"
             android:gravity="center"
             android:text="公告：因道路施工123路临时改线！"
             android:textColor="@color/white"
-            android:textSize="15dp"
+            android:textSize="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,11 +33,11 @@
             android:id="@+id/tv_weather_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="38.5dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginLeft="77dp"
+            android:layout_marginTop="30dp"
             android:text="@{model.temperature}"
             android:textColor="@color/white"
-            android:textSize="30dp"
+            android:textSize="60dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_notice" />
 
@@ -45,19 +45,19 @@
             android:id="@+id/tv_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10dp"
             android:text="@{model.weather}"
             android:textColor="@color/white"
-            android:textSize="15dp"
+            android:textSize="30dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_weather_temp"
             app:layout_constraintLeft_toRightOf="@+id/tv_weather_temp" />
 
         <RelativeLayout
             android:id="@+id/rely"
-            android:layout_width="530dp"
-            android:layout_height="364dp"
-            android:layout_marginLeft="38.5dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="1060dp"
+            android:layout_height="728dp"
+            android:layout_marginLeft="77dp"
+            android:layout_marginTop="40dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_weather">
 
@@ -76,23 +76,23 @@
 
         <TextView
             android:id="@+id/tv_station_name"
-            android:layout_width="330dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="15dp"
+            android:layout_width="660dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/bg_station_name"
             android:gravity="center"
             android:text="当前站点：江晖路滨康小区北"
             android:textColor="@color/white"
-            android:textSize="20dp"
+            android:textSize="40dp"
             app:layout_constraintLeft_toRightOf="@+id/rely"
             app:layout_constraintTop_toBottomOf="@+id/tv_notice" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recy_main"
-            android:layout_width="330dp"
-            android:layout_height="364dp"
-            android:layout_marginLeft="20dp"
+            android:layout_width="660dp"
+            android:layout_height="728dp"
+            android:layout_marginLeft="40dp"
             app:layout_constraintBottom_toBottomOf="@+id/rely"
             app:layout_constraintLeft_toRightOf="@+id/rely"
             app:layout_constraintTop_toTopOf="@+id/rely"
@@ -101,7 +101,7 @@
         <RelativeLayout
             android:id="@+id/rely_bottom"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="90dp"
             android:background="@drawable/bg_bottom"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent">
@@ -112,10 +112,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="40dp"
                 android:text="3301000001"
                 android:textColor="@color/white"
-                android:textSize="12dp" />
+                android:textSize="24dp" />
 
             <TextView
                 android:id="@+id/tv_version"
@@ -123,22 +123,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 android:text="v1.0.0"
                 android:textColor="@color/white"
-                android:textSize="12dp" />
+                android:textSize="24dp" />
 
             <TextView
                 android:id="@+id/tv_welcome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="40dp"
                 android:layout_toLeftOf="@+id/tv_version"
                 android:text="欢迎使用智能公交"
                 android:textColor="@color/white"
-                android:textSize="13dp" />
+                android:textSize="26dp" />
         </RelativeLayout>
 
         <TextView
@@ -147,9 +147,9 @@
             android:layout_height="match_parent"
             android:background="@color/purple_700"
             android:gravity="center"
-            android:padding="30dp"
+            android:padding="60dp"
             android:textColor="@color/white"
-            android:textSize="60dp"
+            android:textSize="120dp"
             android:visibility="gone"
             tools:text="错误信息" />
 

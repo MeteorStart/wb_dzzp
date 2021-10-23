@@ -74,4 +74,7 @@ dependencies {
 
     //Logger2
     implementation 'com.orhanobut:logger:2.1.1'
+
+    //权限相关
+    implementation 'pub.devrel:easypermissions:2.0.1'
 }

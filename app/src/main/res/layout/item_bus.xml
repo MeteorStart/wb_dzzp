@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="328dp"
-    android:layout_height="60dp"
-    android:layout_marginBottom="16dp"
+    android:layout_width="660dp"
+    android:layout_height="120dp"
+    android:layout_marginBottom="32dp"
     android:background="@drawable/bg_item"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="218dp"
-        android:layout_height="60dp"
+        android:layout_width="440dp"
+        android:layout_height="120dp"
         android:gravity="center_vertical">
 
         <com.qiyang.wb_dzzp.view.autoTextView.AutofitTextView
             android:id="@+id/tv_bus_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="16dp"
             android:layout_weight="1"
             android:maxLines="2"
             android:gravity="center"
             android:text="328"
             android:textColor="@color/blackfont"
-            android:textSize="20dp" />
+            android:textSize="40dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="16dp"
             android:text="开往"
             android:textColor="@color/blackfont"
-            android:textSize="14dp" />
+            android:textSize="28dp" />
 
         <com.qiyang.wb_dzzp.view.autoTextView.AutofitTextView
             android:id="@+id/tv_end_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:maxLines="2"
             android:layout_weight="1"
             android:text="武林广场西"
             android:textColor="@color/blackfont"
-            android:textSize="16dp" />
+            android:textSize="32dp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/lay_now"
-        android:layout_width="110dp"
+        android:layout_width="220dp"
         android:layout_height="match_parent"
         android:background="@drawable/bg_orange"
         android:gravity="center"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:text="首站发车"
             android:textColor="@color/white"
-            android:textSize="12dp" />
+            android:textSize="24dp" />
 
         <com.qiyang.wb_dzzp.view.autoTextView.AutofitTextView
             android:id="@+id/tv_content"
@@ -67,6 +67,6 @@
             android:layout_height="wrap_content"
             android:text="12:30"
             android:textColor="@color/white"
-            android:textSize="15dp" />
+            android:textSize="30dp" />
     </LinearLayout>
 </LinearLayout>
