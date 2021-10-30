@@ -38,15 +38,15 @@ public class MQTTService extends Service {
     private MqttConnectOptions conOpt;
 
     //测试
-    private String host = UrlConstant.host;
+    private String host = UrlConstant.host + MyApplication.deviceConfigBean.getIotEndPoint();
     //正式
 //    private String host = "tcp://192.168.110.233:1884";
 
-    private String userName = "clientUser";
-    private String passWord = "hz310000";
+    private String userName = MyApplication.deviceConfigBean.getIotProductKey();
+    private String passWord = MyApplication.deviceConfigBean.getIotProductSecret();
 
     private static String publishTopic = "board/onlineStatus/device";   //发送心跳topic
-    private static String deadTopic = "board/will/onlineStatus/device"; //遗愿topic
+    private static String deadTopic = MyApplication.deviceConfigBean.getIotWillTopic(); //遗愿topic
 
     //private String clientId = "1001000011";//客户端标识
 
@@ -133,11 +133,9 @@ public class MQTTService extends Service {
 
     public String setHeartBeats(String onlineStatus) {
         HeartBeats beats = new HeartBeats();
-        beats.setDeviceName(deviceConfigBean.getStationName());
-        beats.setStatus(onlineStatus);
+        beats.setDevCode(deviceConfigBean.getDevCode());
+        beats.setCityCode(deviceConfigBean.getCityCode());
         beats.setTime(AppDateMgr.timeStamp2Date(System.currentTimeMillis() + "", ""));
-        //beats.setLastTime(DateUtils.date2TimeStamp(System.currentTimeMillis()+"",""));
-        //beats.setUtcLastTime(DateUtils.date2TimeStamp(System.currentTimeMillis()+"",""));
         return new Gson().toJson(beats);
     }
 
@@ -250,7 +248,7 @@ public class MQTTService extends Service {
      */
     private void subTopic() {
         try {
-            String subTop = "moquetteHz/" + deviceConfigBean.getStationName() + "/server_to_device";
+            String subTop = deviceConfigBean.getIotSubTopic().get(0);
             client.subscribe(subTop, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {

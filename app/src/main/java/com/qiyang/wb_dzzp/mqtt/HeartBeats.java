@@ -2,39 +2,17 @@ package com.qiyang.wb_dzzp.mqtt;
 
 public class HeartBeats {
 
-    private String deviceName;
-    private String status;
     private String time;
-    private String lastTime;
-    private String utcLastTime;
-    private String clientIp;
+    private String cityCode;
+    private String devCode;
 
     @Override
     public String toString() {
         return "HeartBeats{" +
-                "deviceName='" + deviceName + '\'' +
-                ", status='" + status + '\'' +
-                ", time='" + time + '\'' +
-                ", lastTime='" + lastTime + '\'' +
-                ", utcLastTime='" + utcLastTime + '\'' +
-                ", clientIp='" + clientIp + '\'' +
+                "time='" + time + '\'' +
+                ", cityCode='" + cityCode + '\'' +
+                ", devCode='" + devCode + '\'' +
                 '}';
-    }
-
-    public String getDeviceName() {
-        return deviceName;
-    }
-
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getTime() {
@@ -45,31 +23,19 @@ public class HeartBeats {
         this.time = time;
     }
 
-    public String getLastTime() {
-        return lastTime;
+    public String getCityCode() {
+        return cityCode;
     }
 
-    public void setLastTime(String lastTime) {
-        this.lastTime = lastTime;
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
     }
 
-    public String getUtcLastTime() {
-        return utcLastTime;
+    public String getDevCode() {
+        return devCode;
     }
 
-    public void setUtcLastTime(String utcLastTime) {
-        this.utcLastTime = utcLastTime;
+    public void setDevCode(String devCode) {
+        this.devCode = devCode;
     }
-
-    public String getClientIp() {
-        return clientIp;
-    }
-
-    public void setClientIp(String clientIp) {
-        this.clientIp = clientIp;
-    }
-
-
-
-
 }

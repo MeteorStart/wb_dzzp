@@ -13,7 +13,7 @@ object UrlConstant {
 
     //测试接口地址
     const val TEST_BASE_URL = "http://120.26.79.180"
-    const val host = "tcp://192.168.110.233:1884"    //mqtt 正式
+    const val host = "tcp://120.26.79.180:"    //mqtt 正式
     const val URL_REX = "http://192.168.110.233:8088/download/"   //正式文件上传前缀
     const val isDebug = true
 

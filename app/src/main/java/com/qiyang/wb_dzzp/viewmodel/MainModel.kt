@@ -71,7 +71,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
     ) {
         repeatJob = viewModelScope.repeatLaunch(DEFUT_GET_STATION_TIME, {
             getConfig(regId, success, showError, fail)
-        }, 60, DEFUT_GET_STATION_TIME)
+        }, 60, 0)
     }
 
     /**
@@ -89,6 +89,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
                 var result = busRepository.getConfig(regId)
                 if (result.code == SUCESS) {
                     repeatJob?.cancel()
+                    MyApplication.deviceConfigBean = result.data
                     success(result.data)
                 } else if (result.code == "400602") {
                     showError(result.msg)
