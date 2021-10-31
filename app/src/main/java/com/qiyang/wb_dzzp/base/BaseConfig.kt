@@ -43,8 +43,8 @@ object BaseConfig {
     //log文件最大长度
     const val LOG_MAX_BYTES = 102400 * 1024 // 100M averages to a 4000 lines per file
 
-    const val MAX_WIDTH = 1600
-    const val MAX_HEIGHT = 1200
+    const val MAX_WIDTH = 1920
+    const val MAX_HEIGHT = 1080
 
     //    ARRIVE：到站
     const val STATES_ARRIVE = "ARRIVE"

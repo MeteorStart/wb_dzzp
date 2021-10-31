@@ -261,7 +261,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             block = {
                 val result = busRepository.screenshot(body)
                 if (result.code == SUCESS) {
-
+                    success()
                 } else {
                     fail(result.msg)
                 }
@@ -294,7 +294,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
-    fun upLoadFile(file: File, success: () -> Unit, fail: (String) -> Unit) {
+    fun upLoadFile(file: File, success: (String) -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
                 val sim = FileUtils.getSim()
@@ -307,6 +307,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
                     MultipartBody.Part.createFormData("file", file.name, requestBody)
                 val result = busRepository.upLoadFile(params, body)
                 if (result.code == SUCESS) {
+                    success(result.data.toString())
                 } else {
                     fail(result.msg)
                 }

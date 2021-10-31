@@ -71,7 +71,9 @@ dependencies {
         mavenCentral()
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     }
-
+    //EventBus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    
     //Logger2
     implementation 'com.orhanobut:logger:2.1.1'
 

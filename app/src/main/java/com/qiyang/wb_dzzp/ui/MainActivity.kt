@@ -3,10 +3,10 @@ package com.qiyang.wb_dzzp.ui
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import android.widget.MediaController
 import com.google.gson.Gson
-import com.jtkj.dzzp_52_screen.utils.AppPrefsUtils
 import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
@@ -14,9 +14,12 @@ import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.data.DeviceConfigBean
 import com.qiyang.wb_dzzp.data.Route
 import com.qiyang.wb_dzzp.data.StationBody
+import com.qiyang.wb_dzzp.data.UpHeartBody
 import com.qiyang.wb_dzzp.databinding.ActivityMainBinding
 import com.qiyang.wb_dzzp.mqtt.*
+import com.qiyang.wb_dzzp.mqtt.EnventBean.UpDataEvent
 import com.qiyang.wb_dzzp.network.repository.BusRepository
+import com.qiyang.wb_dzzp.utils.BitmapUtils
 import com.qiyang.wb_dzzp.utils.FileHelper
 import com.qiyang.wb_dzzp.utils.FileUtils
 import com.qiyang.wb_dzzp.utils.RecycleViewUtils
@@ -49,7 +52,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     override fun initActivity(savedInstanceState: Bundle?) {
         NavigationBarStatusBar(this, true)
         mBinding.model = mViewModel
-//        initVideoView("")
+        initVideoView("")
         initRecy()
         initData()
     }
@@ -227,6 +230,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
 
     var data = ""
 
+//    日志消息，type=logUp
+//    截图消息，type=screenshot
+//    运营设置消息，type=operationSet
+//    通知消息，type说明：
+//    升级 notice_apk
+//    文字 notice_notice
+//    二维码 notice_qrCode
+//    图片 notice_picture
+//    底部 notice_below
+
     override fun setMessage(message: String?) {
         // 下行数据通知
         try {
@@ -237,114 +250,46 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             val type = pushBean.type + ""
 
             when (type) {
-//                //图片下发
-//                "picture" -> {
-//                    val pushPicEvent =
-//                        gson.fromJson(data, PicEventBean::class.java)
-//                    EventBus.getDefault().postSticky(pushPicEvent.data)
-//                }
-//                //截图
-//                "screenCapture" -> {
-//                    EventBus.getDefault().postSticky(ScreenEvent())
-//                }
-//                //升级相关
-//                "screenUpdate" -> {
-//                    LogUtils.print("下发升级程序")
-//
-//                    val pushBean =
-//                        gson.fromJson(data, UpDataBean::class.java)
-//
-//                    RetrofitManager.create(ConfigService::class.java)
-//                        .download(pushBean.data.url)
-//                        .compose(SchedulerUtils.ioToMain())
-//                        .subscribe({
-//                            LogUtils.print("下载成功" + it.message())
-//                            var file = File("sdcard/update.apk")
-//                            MyApplication.writeFile2Disk(it, file)
-//                        }, {
-//                            LogUtils.print("下载失败" + it.message)
-//                        })
-//                }
-//                //公告下发
-//                "notice" -> {
-//                    LogUtils.print("通知下发：${pushBean.data.toString()}")
-//                    try {
-//                        val noticeBean = gson.fromJson<NoticeBean>(data, NoticeBean::class.java)
-//                        val pushNoticeBean = noticeBean.data
-//                        EventBus.getDefault().postSticky(pushNoticeBean)
-//                    } catch (e: Exception) {
-//                        LogUtils.print(e.toString())
-//                    }
-//                }
-//                //布局更改
-//                "layout" -> {
-//                    val pushLayoutBean =
-//                        gson.fromJson(pushBean.data.toString(), PushLayoutBean::class.java)
-//                    LogUtils.printError(pushLayoutBean.toString())
-//                    if (pushLayoutBean.layoutId == 1) {
-//                        SharedPreferencesUtils.putInt(
-//                            MyApplication.context,
-//                            BaseConfig.LAYOUT_ID,
-//                            R.layout.activity_main
-//                        )
-//                    } else {
-//                        SharedPreferencesUtils.putInt(
-//                            MyApplication.context,
-//                            BaseConfig.LAYOUT_ID,
-//                            R.layout.activity_main_2
-//                        )
-//                    }
-//                    EventBus.getDefault().postSticky(Event())
-//                }
-//                //风扇控制
-//                "onOffFan" -> {
-//                    val d = pushBean.data.toString()
-//                    LogUtils.print("风扇控制$d")
-//                    EventBus.getDefault().postSticky(FanConcleEvent(d))
-//                }
-//                //开关机时间
-//                "onOffTime" -> {
-//                    val d = pushBean.data.toString()
-//                    LogUtils.printError("补光灯时间$d")
-//                    EventBus.getDefault().postSticky(LightEvent(d))
-//
-//                }
-//                //运营时间
-//                "standbyTime" -> {
-//                    val d = pushBean.data.toString()
-//                    LogUtils.print("运营时间$d")
-//                    EventBus.getDefault().postSticky(StandbyEvent(d))
-//                    AppPrefsUtils.putString(BaseConfig.STAND_TIME, d)
-//                }
-//                //更新线路列表
-//                "updateRouteStatus" -> {
-//                    LogUtils.print("更新线路")
-//                    EventBus.getDefault().postSticky(UpdateRouteStatusEvent())
-//                }
-//                //底部样式改变
-//                "bottom" -> {
-//                    try {
-//                        val bottomBean = gson.fromJson<BottomBean>(data, BottomBean::class.java)
-//                        LogUtils.print("底部状态改变")
-//                        EventBus.getDefault().postSticky(bottomBean.data)
-//                    } catch (e: Exception) {
-//                        LogUtils.print(e.toString())
-//                    }
-//                }
-//                //上传日志信息
-//                "uploadLog" -> {
-//                    try {
-//                        EventBus.getDefault().postSticky(UpLoadLogEvent())
-//                    } catch (e: Exception) {
-//
-//                    }
-//                }
-//                //测试切换图片
-//                "staticPicture" -> {
-//                    val pushPicEvent =
-//                        gson.fromJson(data, PicEventBean::class.java)
-//                    EventBus.getDefault().postSticky(pushPicEvent.data)
-//                }
+                //日志下发
+                "logUp" -> {
+
+                }
+                //截图下发
+                "screenshot" -> {
+                    screenShot()
+                }
+                //设置下发
+                "operationSet" -> {
+
+                }
+                //升级下发
+                "notice_apk" -> {
+                    LogUtils.i("下发升级程序")
+
+                    val pushBean =
+                        gson.fromJson(data, UpDataEvent::class.java)
+                    mViewModel.download(pushBean.data.url, {
+
+                    }, {
+
+                    })
+                }
+                //图片下发
+                "notice_picture" -> {
+
+                }
+                //文字通知下发
+                "notice_notice" -> {
+
+                }
+                //二维码下发
+                "notice_qrCode" -> {
+
+                }
+                //底部图下发
+                "notice_below" -> {
+
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -356,4 +301,54 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     override fun setOnLineStatus(status: String?) {
         LogUtils.i("MQTT连接状态：$status")
     }
+
+    var filePath = ""
+    var fileName = ""
+
+    fun screenShot() {
+
+        val bitmap = BitmapUtils.createBitmap(
+            recy_main.rootView,
+            BaseConfig.MAX_WIDTH,
+            BaseConfig.MAX_HEIGHT
+        )
+
+        if (bitmap != null) {
+            try {
+                fileName = FileUtils.getSim() + "-" + System.currentTimeMillis()
+                BitmapUtils.saveBitmap(bitmap, fileName)
+            } catch (e: java.lang.Exception) {
+
+            } finally {
+                // 保存图片到SD卡上
+                val file = File(
+                    Environment.getExternalStorageDirectory(),
+                    "$fileName.png"
+                )
+
+                filePath = Environment.getExternalStorageDirectory().toString() +
+                        "$fileName.png"
+
+                if (file.exists()) {
+                    LogUtils.e(file.path)
+                    mViewModel.upLoadFile(file, {
+                        mViewModel.screenshot(
+                            UpHeartBody(
+                                BaseConfig.CITY_ID,
+                                FileUtils.getSim() + "",
+                                it
+                            ), {
+                                LogUtils.i("截图上传成功！")
+                            }, {
+                                toast(it)
+                            })
+                    }, {
+                        toast(it)
+                    })
+                }
+
+            }
+        }
+    }
+
 }
