@@ -21,8 +21,8 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.myfirstapp.base.PermissionListener
-import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.R
+import com.qiyang.wb_dzzp.utils.LogUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -45,7 +45,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        LogUtils.i(this.javaClass.name)
+        LogUtils.print(this.javaClass.name)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             changeStatusBarColor(R.color.blackfont)

@@ -6,17 +6,20 @@ import android.content.Context
 import android.os.*
 import android.text.TextUtils
 import android.util.Log
-import com.kk.android.comvvmhelper.utils.LogUtils
-import com.orhanobut.logger.AndroidLogAdapter
-import com.orhanobut.logger.Logger
-import com.orhanobut.logger.PrettyFormatStrategy
+import com.orhanobut.logger.*
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.base.CrashHandlerUtil
 import com.qiyang.wb_dzzp.data.DeviceConfigBean
+import com.qiyang.wb_dzzp.utils.FileUtils
+import com.qiyang.wb_dzzp.utils.FileUtils.Companion.getSim
+import com.qiyang.wb_dzzp.utils.LogUtils
 import com.qiyang.wb_dzzp.utils.UpDateUtils
+import com.qiyang.wb_dzzp.utils.WriteHandler
 import okhttp3.ResponseBody
 import retrofit2.Response
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.system.exitProcess
 
 /**
@@ -54,7 +57,7 @@ class MyApplication : Application() {
          * @author: Meteor
          */
         fun isApkInDebug(context: Context): Boolean {
-            return true
+            return false
         }
 
     }
@@ -73,7 +76,7 @@ class MyApplication : Application() {
         var currentLength: Long = 0
         var os: OutputStream? = null
 
-        LogUtils.e("开始写入文件")
+        LogUtils.printError("开始写入文件")
         val input = response.body()?.byteStream() //获取下载输入流
         val totalLength = response.body()?.contentLength()
 
@@ -91,7 +94,7 @@ class MyApplication : Application() {
                     currentLength += len.toLong()
                     //当百分比为100时下载结束，调用结束回调，并传出下载后的本地路径
                     if ((100 * currentLength / totalLength!!).toInt() == 100) {
-                        LogUtils.e("下载完成")
+                        LogUtils.printError("下载完成")
                         UpDateUtils.pmInstall("/sdcard/update.apk")
                     }
                 }
@@ -144,6 +147,28 @@ class MyApplication : Application() {
                 .tag("X_Meteor")
                 .build()
             Logger.addLogAdapter(AndroidLogAdapter(preFormaatStrategy))
+        }else {
+            val sim = FileUtils.getSim()
+            val cityCode = BaseConfig.CITY_ID
+            //存储位置   sdcard/"城市编号"/"设备id"
+            val folder = "sdcard/$cityCode/$sim"
+            val ht = HandlerThread("AndroidFileLogger.$folder")
+            ht.start()
+            val handler: Handler = WriteHandler(
+                ht.looper,
+                folder,
+                BaseConfig.LOG_MAX_BYTES// 10M averages to a 4000 lines per file
+            )
+            val logStrategy = DiskLogStrategy(handler)
+            val dateFormat = SimpleDateFormat("MM.dd HH:mm:ss", Locale.UK)
+            val csvFormatStrategy =
+                CsvFormatStrategy.newBuilder()
+                    .dateFormat(dateFormat)
+                    .logStrategy(logStrategy)
+                    .tag("X_Meteor")
+                    .build()
+            Logger.addLogAdapter(DiskLogAdapter(csvFormatStrategy))
+            LogUtils.isDebug = false
         }
     }
 
@@ -167,7 +192,7 @@ class MyApplication : Application() {
             )
         val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + time, mPendingIntent)
-        LogUtils.e("定时开始")
+        LogUtils.printError("定时开始")
         killAppProcess()
     }
 
@@ -191,7 +216,7 @@ class MyApplication : Application() {
             )
         val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + time, mPendingIntent)
-        LogUtils.e("定时开始")
+        LogUtils.printError("定时开始")
 //        killAppProcess()
     }
 

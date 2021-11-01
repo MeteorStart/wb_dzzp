@@ -1,7 +1,6 @@
 package com.qiyang.wb_dzzp.utils;
 
 import com.jtkj.dzzp_52_screen.utils.AppPrefsUtils;
-import com.kk.android.comvvmhelper.utils.LogUtils;
 import com.qiyang.wb_dzzp.MyApplication;
 
 import java.io.BufferedReader;
@@ -28,27 +27,27 @@ public class UpDateUtils {
         StringBuilder errorMsg = new StringBuilder();
         String str = null;
         try {
-            LogUtils.INSTANCE.e("开始升级");
+            LogUtils.Companion.print("开始升级");
             AppPrefsUtils.INSTANCE.putBoolean("isUpdate", true);
             MyApplication.Companion.getMyApplication().restartApplication(60000, false);
             process = processBuilder.start();
             successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
             errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             while ((str = successResult.readLine()) != null) {
-                LogUtils.INSTANCE.i("Success");
+                LogUtils.Companion.print("Success");
                 successMsg.append(str);
             }
             while ((str = errorResult.readLine()) != null) {
-                LogUtils.INSTANCE.i("Error" + str);
+                LogUtils.Companion.print("Error" + str);
                 errorMsg.append(str);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.INSTANCE.i(e.getMessage());
+            LogUtils.Companion.print(e.getMessage());
         }
         boolean s = successMsg.toString().equalsIgnoreCase("success");
-        LogUtils.INSTANCE.i("s : " + s);
+        LogUtils.Companion.print("s : " + s);
         return successMsg.toString().equalsIgnoreCase("success");
     }
 

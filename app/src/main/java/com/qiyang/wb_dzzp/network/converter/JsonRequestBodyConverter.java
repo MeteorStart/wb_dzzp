@@ -2,7 +2,7 @@ package com.qiyang.wb_dzzp.network.converter;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
-import com.kk.android.comvvmhelper.utils.LogUtils;
+import com.qiyang.wb_dzzp.utils.LogUtils;
 
 import java.io.IOException;
 
@@ -36,7 +36,7 @@ public class JsonRequestBodyConverter<T> implements Converter<T, RequestBody> {
     @Override
     public RequestBody convert(T value) throws IOException {
         String postBody = gson.toJson(value); //对象转化成json
-        LogUtils.INSTANCE.i("转化后的数据：" + postBody);
+        LogUtils.Companion.print("转化后的数据：" + postBody);
         return RequestBody.create(MEDIA_TYPE, postBody);
     }
 

@@ -12,11 +12,11 @@ import android.os.Handler;
 import android.os.IBinder;
 
 import com.google.gson.Gson;
-import com.kk.android.comvvmhelper.utils.LogUtils;
 import com.qiyang.wb_dzzp.MyApplication;
 import com.qiyang.wb_dzzp.data.DeviceConfigBean;
 import com.qiyang.wb_dzzp.network.http.UrlConstant;
 import com.qiyang.wb_dzzp.utils.AppDateMgr;
+import com.qiyang.wb_dzzp.utils.LogUtils;
 import com.qiyang.wb_dzzp.utils.SharedPreferencesUtils;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -70,7 +70,7 @@ public class MQTTService extends Service {
         try {
             if (client != null) {
                 client.publish(publishTopic, msg.getBytes(), qos.intValue(), retained.booleanValue());
-                LogUtils.INSTANCE.i("publish     " + msg);
+                LogUtils.Companion.print("publish     " + msg);
             }
         } catch (MqttException e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class MQTTService extends Service {
     public void init() {
         // 服务器地址（协议+地址+端口号）
         String uri = host;
-        client = new MqttAndroidClient(this, uri, deviceConfigBean.getStationName());
+        client = new MqttAndroidClient(this, uri, deviceConfigBean.getIotClientId());
         // 设置MQTT监听并且接受消息
         client.setCallback(mqttCallback);
         conOpt = new MqttConnectOptions();
@@ -112,7 +112,7 @@ public class MQTTService extends Service {
             try {
                 conOpt.setWill(deadTopic, initWillMessgae().getBytes(), qos.intValue(), retained.booleanValue());
             } catch (Exception e) {
-                LogUtils.INSTANCE.i("Exception Occured" + e);
+                LogUtils.Companion.print("Exception Occured" + e);
                 doConnect = false;
                 iMqttActionListener.onFailure(null, e);
             }
@@ -124,11 +124,12 @@ public class MQTTService extends Service {
     }
 
     private String initWillMessgae() {
-        WillMessage willMessage = new WillMessage();
-        willMessage.setStatus("offline");
-        willMessage.setDeviceName(deviceConfigBean.getStationName());
+        HeartBeats beats = new HeartBeats();
+        beats.setDevCode(deviceConfigBean.getDevCode());
+        beats.setCityCode(deviceConfigBean.getCityCode());
+        beats.setTime(AppDateMgr.timeStamp2Date(System.currentTimeMillis() + "", ""));
         Gson gson = new Gson();
-        return gson.toJson(willMessage);
+        return gson.toJson(beats);
     }
 
     public String setHeartBeats(String onlineStatus) {
@@ -170,7 +171,7 @@ public class MQTTService extends Service {
                 }
             }, 3000);
         } else {
-            LogUtils.INSTANCE.i("client is connected ");
+            LogUtils.Companion.print("client is connected ");
         }
         isOnlineSqual();
     }
@@ -188,7 +189,7 @@ public class MQTTService extends Service {
 
     private void netWorkIsOk() {
         String s = SharedPreferencesUtils.getString(this, "deviceStatus");
-        LogUtils.INSTANCE.i("重启" + s);
+        LogUtils.Companion.print("重启" + s);
         if (s.equals("离线")) {
 //            init();
             if (!client.isConnected()) {
@@ -198,7 +199,7 @@ public class MQTTService extends Service {
                     e.printStackTrace();
                 }
             } else {
-                LogUtils.INSTANCE.i("client is connected ");
+                LogUtils.Companion.print("client is connected ");
             }
 //            try {
 //                Log.e("重启1", "重启执行");
@@ -214,7 +215,7 @@ public class MQTTService extends Service {
     public IMqttActionListener iMqttActionListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken arg0) {
-            LogUtils.INSTANCE.i("连接成功");
+            LogUtils.Companion.print("连接成功");
             publish(setHeartBeats("onLine"));
             DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
             disconnectedBufferOptions.setBufferEnabled(true);
@@ -229,12 +230,12 @@ public class MQTTService extends Service {
         public void onFailure(IMqttToken arg0, Throwable arg1) {
             arg1.printStackTrace();
             String msg = null == arg1.toString() ? "null" : arg1.toString();
-            LogUtils.INSTANCE.i("连接失败：" + msg);
+            LogUtils.Companion.print("连接失败：" + msg);
             if (iOnLineCallBack != null) {
                 iOnLineCallBack.setOnLineStatus("离线");
                 // isSet = false;
             }
-            //doClientConnection();
+//            doClientConnection();
             // 连接失败，重连
             SharedPreferencesUtils.putString(MyApplication.context, "deviceStatus", "离线");
         }
@@ -252,13 +253,13 @@ public class MQTTService extends Service {
             client.subscribe(subTop, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    LogUtils.INSTANCE.i("sub success" + "--->subtopic：" + deviceConfigBean.getIotSubTopic() + "---->clientid：" + deviceConfigBean.getStationName());
+                    LogUtils.Companion.print("sub success" + "--->subtopic：" + deviceConfigBean.getIotSubTopic() + "---->clientid：" + deviceConfigBean.getIotClientId());
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // restartApplication(8000);
-                    LogUtils.INSTANCE.i("sub fail" + exception.toString());
+                    LogUtils.Companion.print("sub fail" + exception.toString());
                 }
             });
         } catch (MqttException e) {
@@ -281,7 +282,7 @@ public class MQTTService extends Service {
     private MqttCallbackExtended mqttCallback = new MqttCallbackExtended() {
         @Override
         public void connectComplete(boolean reconnect, String serverURI) {
-            LogUtils.INSTANCE.i("connectComplete" + reconnect);
+            LogUtils.Companion.print("connectComplete" + reconnect);
             if (reconnect) {
                 subTopic();
             }
@@ -317,11 +318,11 @@ public class MQTTService extends Service {
         @Override
         public void connectionLost(Throwable arg0) {
             // 失去连接，重连
-            LogUtils.INSTANCE.i("失去连接");
+            LogUtils.Companion.print("失去连接");
             String message = "{\"deviceName\":\"" + deviceConfigBean.getStationName() + ",status:" + "offline" + "\"}";
             Integer qos = 0;
             Boolean retained = false;
-            LogUtils.INSTANCE.i("{\"deviceName\":\"" + deviceConfigBean.getStationName() + "\"}");
+            LogUtils.Companion.print("{\"deviceName\":\"" + deviceConfigBean.getStationName() + "\"}");
             conOpt.setWill(deadTopic, initWillMessgae().getBytes(), qos.intValue(), retained.booleanValue());
             isDisConnected = true;
             if (iOnLineCallBack != null) {
@@ -355,10 +356,10 @@ public class MQTTService extends Service {
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         if (info != null && info.isAvailable()) {
             String name = info.getTypeName();
-            LogUtils.INSTANCE.i("MQTT当前网络名称：" + name);
+            LogUtils.Companion.print("MQTT当前网络名称：" + name);
             return true;
         } else {
-            LogUtils.INSTANCE.i("MQTT没有可用网络");
+            LogUtils.Companion.print("MQTT没有可用网络");
             return false;
         }
     }

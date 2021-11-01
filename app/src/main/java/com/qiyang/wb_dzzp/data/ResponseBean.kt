@@ -128,9 +128,10 @@ data class Set(
  * @email: lx802315@163.com
  */
 data class Version(
-    val app: String,
-    val bottom: String,
-    val hide: String,
+    val apk: String,
+    val below: String,
+    val cityCode: String,
+    val devCode: String,
     val notice: String,
     val picture: String,
     val video: String

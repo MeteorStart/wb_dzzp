@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.kk.android.comvvmhelper.utils.LogUtils;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -1068,7 +1066,7 @@ public class AppDateMgr {
         try {
             returnDate = dateFormat.parse(strDate);
         } catch (ParseException e) {
-            LogUtils.INSTANCE.i("parseDate failed !");
+            LogUtils.Companion.print("parseDate failed !");
         }
         return returnDate;
 
@@ -1311,7 +1309,7 @@ public class AppDateMgr {
             os.writeBytes("exit\n");
             os.flush();
         } catch (IOException e) {
-            LogUtils.INSTANCE.i("时间设置失败");
+            LogUtils.Companion.print("时间设置失败");
         }
     }
 

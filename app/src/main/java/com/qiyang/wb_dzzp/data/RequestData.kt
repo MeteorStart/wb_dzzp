@@ -18,11 +18,10 @@ data class RegisterBody(
 
 /**
  * @name: 上送版本信息
- * @param app
- * @param bottom
+ * @param apk
+ * @param below
  * @param cityCode
  * @param devCode
- * @param hide
  * @param notice
  * @param picture
  * @param video
@@ -31,11 +30,10 @@ data class RegisterBody(
  * @email: lx802315@163.com
  */
 data class CurVersionBody(
-    val app: String,
-    val bottom: String,
+    val apk: String,
+    val below: String,
     val cityCode: String,
     val devCode: String,
-    val hide: String,
     val notice: String,
     val picture: String,
     val video: String

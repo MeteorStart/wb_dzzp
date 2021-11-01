@@ -6,7 +6,6 @@ import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
-import com.kk.android.comvvmhelper.utils.LogUtils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -101,7 +100,7 @@ public class AppSysMgr {
         } catch (IOException e) {
             e.printStackTrace();
 //            AppLogMessageMgr.e("AppSysMgr-->>getSysCPUSerialNum", );
-            LogUtils.INSTANCE.i(e.getMessage().toString());
+            LogUtils.Companion.print(e.getMessage().toString());
         }
         return cpuSerialNum;
     }

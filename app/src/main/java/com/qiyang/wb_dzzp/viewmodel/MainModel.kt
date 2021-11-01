@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kk.android.comvvmhelper.extension.repeatLaunch
 import com.kk.android.comvvmhelper.extension.safeLaunch
-import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.MyApplication
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.base.BaseConfig.DEFUT_GET_STATION_TIME
@@ -13,11 +12,11 @@ import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.SUCESS
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.FileUtils
+import com.qiyang.wb_dzzp.utils.LogUtils
 import kotlinx.coroutines.Job
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Body
 import java.io.File
 import java.util.*
 
@@ -322,7 +321,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         viewModelScope.safeLaunch {
             block = {
                 val result = busRepository.download(fileUrl)
-                LogUtils.d("1")
+                LogUtils.print("1")
                 var file = File("sdcard/update.apk")
                 MyApplication.myApplication.writeFile2Disk(result, file)
             }

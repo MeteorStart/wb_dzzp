@@ -7,7 +7,7 @@ import android.os.Environment
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.kk.android.comvvmhelper.utils.LogUtils
+import com.qiyang.wb_dzzp.utils.LogUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintWriter
@@ -82,13 +82,13 @@ class CrashHandlerUtil : Thread.UncaughtExceptionHandler {
     override fun uncaughtException(thread: Thread, ex: Throwable) {
         if (!handleException(ex) && mDefaultHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
-            LogUtils.e(ex.message!!)
+            LogUtils.printError(ex.message!!)
             mDefaultHandler!!.uncaughtException(thread, ex)
         } else {
             try {
                 Thread.sleep(3000)
             } catch (e: InterruptedException) {
-                LogUtils.e(e.toString())
+                LogUtils.printError(e.toString())
                 Log.e(TAG, "error : ", e)
                 e.printStackTrace()
             }

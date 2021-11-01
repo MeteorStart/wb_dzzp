@@ -1,6 +1,5 @@
 package com.qiyang.wb_dzzp.utils
 
-import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.MyApplication
 import java.io.File
 import java.io.IOException
@@ -242,7 +241,7 @@ class FileUtils {
             val file = File(path)
             val files: Array<File> = file.listFiles()
             if (files == null) {
-                LogUtils.e("空目录")
+                LogUtils.printError("空目录")
                 return null
             }
             val s: MutableList<String> = ArrayList()
@@ -276,7 +275,7 @@ class FileUtils {
             // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
             return if (file.exists() && file.isFile) {
                 if (file.delete()) {
-                    LogUtils.e(
+                    LogUtils.printError(
                         "Copy_Delete.deleteSingleFile: 删除单个文件" + `filePath$Name` + "成功！"
                     )
                     true
@@ -321,7 +320,7 @@ class FileUtils {
             }
             // 删除当前目录
             return if (dirFile.delete()) {
-                LogUtils.e("Copy_Delete.deleteDirectory: 删除目录" + filePath + "成功！")
+                LogUtils.printError("Copy_Delete.deleteDirectory: 删除目录" + filePath + "成功！")
                 true
             } else {
                 false

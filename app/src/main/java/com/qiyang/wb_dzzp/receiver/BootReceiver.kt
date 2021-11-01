@@ -5,8 +5,8 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.ui.StartActivity
+import com.qiyang.wb_dzzp.utils.LogUtils
 
 /**
  * @author: X_Meteor
@@ -27,7 +27,7 @@ class BootReceiver : BroadcastReceiver() {
             )
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 30000, mPendingIntent)
-            LogUtils.i("Auto Run After 20s")
+            LogUtils.print("Auto Run After 20s")
         }
     }
 }

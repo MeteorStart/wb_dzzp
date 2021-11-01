@@ -8,17 +8,13 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
-import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.data.CurVersionBody
 import com.qiyang.wb_dzzp.databinding.ActivityStartBinding
 import com.qiyang.wb_dzzp.network.repository.BusRepository
-import com.qiyang.wb_dzzp.utils.AppDateMgr
-import com.qiyang.wb_dzzp.utils.AppSysMgr
-import com.qiyang.wb_dzzp.utils.AppUtils
-import com.qiyang.wb_dzzp.utils.FileUtils
+import com.qiyang.wb_dzzp.utils.*
 import com.qiyang.wb_dzzp.utils.FileUtils.Companion.saveDevId
 import com.qiyang.wb_dzzp.utils.FileUtils.Companion.saveEquipId
 import com.qiyang.wb_dzzp.utils.FileUtils.Companion.saveTime
@@ -107,7 +103,7 @@ class StartActivity : BaseActivity<ActivityStartBinding>() , EasyPermissions.Per
                     + "-" + time)
 
             //本地唯一标示：设备序列号+ 手机唯一标示
-            LogUtils.i("设备序列号：$deviceId")
+            LogUtils.print("设备序列号：$deviceId")
 
             saveDevId(deviceId)
         }
@@ -139,7 +135,7 @@ class StartActivity : BaseActivity<ActivityStartBinding>() , EasyPermissions.Per
      * @email: lx802315@163.com
      */
     private fun jumpToMain(errorCode: Int) {
-        LogUtils.i("当前布局: mainActivity")
+        LogUtils.print("当前布局: mainActivity")
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("errorCode", errorCode)
         startActivity(intent)

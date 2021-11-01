@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.*
 import android.os.Environment
 import android.view.View
-import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.MyApplication
 import com.qiyang.wb_dzzp.R
 import java.io.File
@@ -76,13 +75,13 @@ class BitmapUtils {
                 )
                 var string = "/sdcard/" + file.name
 
-                LogUtils.i("filePath : $string")
+                LogUtils.print("filePath : $string")
 
                 val stream = FileOutputStream(file)
                 baseBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                LogUtils.i("图片保存成功")
+                LogUtils.print("图片保存成功")
             } catch (e: Exception) {
-                LogUtils.e("图片保存失败")
+                LogUtils.printError("图片保存失败")
                 e.printStackTrace()
             }
 
@@ -101,13 +100,13 @@ class BitmapUtils {
                     "$fileName.png"
                 )
                 val string = "/sdcard/" + file.name
-                LogUtils.i("filePath : $string")
+                LogUtils.print("filePath : $string")
                 val stream = FileOutputStream(file)
                 baseBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                LogUtils.i("图片保存成功")
+                LogUtils.print("图片保存成功")
                 return true
             } catch (e: Exception) {
-                LogUtils.e("图片保存失败")
+                LogUtils.printError("图片保存失败")
                 e.printStackTrace()
                 return false
             }
@@ -128,15 +127,15 @@ class BitmapUtils {
                 )
                 val string = "/sdcard/" + file.name
 
-                LogUtils.i("filePath : $string")
+                LogUtils.print("filePath : $string")
 
                 val stream = FileOutputStream(file)
                 baseBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                LogUtils.i("图片保存成功")
+                LogUtils.print("图片保存成功")
 
                 return string
             } catch (e: Exception) {
-                LogUtils.e("图片保存失败")
+                LogUtils.printError("图片保存失败")
                 e.printStackTrace()
                 return ""
             }
@@ -157,15 +156,15 @@ class BitmapUtils {
                 )
                 var string = "/sdcard/" + file.name
 
-                LogUtils.i("filePath : $string")
+                LogUtils.print("filePath : $string")
 
                 val stream = FileOutputStream(file)
                 baseBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                LogUtils.i("save bitmap success")
+                LogUtils.print("save bitmap success")
 
                 return string
             } catch (e: Exception) {
-                LogUtils.i("save bitmap fail")
+                LogUtils.print("save bitmap fail")
                 e.printStackTrace()
                 return ""
             }

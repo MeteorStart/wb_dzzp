@@ -7,7 +7,6 @@ import android.os.Environment
 import android.view.View
 import android.widget.MediaController
 import com.google.gson.Gson
-import com.kk.android.comvvmhelper.utils.LogUtils
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.base.BaseConfig
@@ -19,10 +18,7 @@ import com.qiyang.wb_dzzp.databinding.ActivityMainBinding
 import com.qiyang.wb_dzzp.mqtt.*
 import com.qiyang.wb_dzzp.mqtt.EnventBean.UpDataEvent
 import com.qiyang.wb_dzzp.network.repository.BusRepository
-import com.qiyang.wb_dzzp.utils.BitmapUtils
-import com.qiyang.wb_dzzp.utils.FileHelper
-import com.qiyang.wb_dzzp.utils.FileUtils
-import com.qiyang.wb_dzzp.utils.RecycleViewUtils
+import com.qiyang.wb_dzzp.utils.*
 import com.qiyang.wb_dzzp.viewmodel.MainModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
@@ -195,7 +191,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             mediaPlayer.isLooping = true
         }
         video.setOnErrorListener(MediaPlayer.OnErrorListener { mediaPlayer, what, extra ->
-            LogUtils.e("视频播放错误码$what")
+            LogUtils.printError("视频播放错误码$what")
             restartVideo(url)
             true
         })
@@ -211,7 +207,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     }
 
     fun notifyVideo() {
-        LogUtils.e("暂停视频播放")
+        LogUtils.printError("暂停视频播放")
         if (video != null) {
             video.suspend()
             video.stopPlayback()
@@ -230,7 +226,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
 
     var data = ""
 
-//    日志消息，type=logUp
+    //    日志消息，type=logUp
 //    截图消息，type=screenshot
 //    运营设置消息，type=operationSet
 //    通知消息，type说明：
@@ -239,12 +235,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
 //    二维码 notice_qrCode
 //    图片 notice_picture
 //    底部 notice_below
-
     override fun setMessage(message: String?) {
         // 下行数据通知
         try {
             data = message!!
-            LogUtils.i("接收推送成功: $data")
+            LogUtils.print("接收推送成功: $data")
             val gson = Gson()
             val pushBean = gson.fromJson(data, PushBean::class.java)
             val type = pushBean.type + ""
@@ -264,12 +259,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 }
                 //升级下发
                 "notice_apk" -> {
-                    LogUtils.i("下发升级程序")
-
+                    LogUtils.print("下发升级程序")
                     val pushBean =
                         gson.fromJson(data, UpDataEvent::class.java)
                     mViewModel.download(pushBean.data.url, {
-
+                        LogUtils.print("下载成功")
                     }, {
 
                     })
@@ -280,7 +274,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 }
                 //文字通知下发
                 "notice_notice" -> {
-
                 }
                 //二维码下发
                 "notice_qrCode" -> {
@@ -293,13 +286,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            LogUtils.i(e.toString())
+            LogUtils.print(e.toString())
         }
 
     }
 
     override fun setOnLineStatus(status: String?) {
-        LogUtils.i("MQTT连接状态：$status")
+        LogUtils.print("MQTT连接状态：$status")
     }
 
     var filePath = ""
@@ -330,15 +323,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                         "$fileName.png"
 
                 if (file.exists()) {
-                    LogUtils.e(file.path)
+                    LogUtils.printError(file.path)
                     mViewModel.upLoadFile(file, {
+                        LogUtils.print("文件上传成功！")
+                        file.delete()
                         mViewModel.screenshot(
                             UpHeartBody(
                                 BaseConfig.CITY_ID,
                                 FileUtils.getSim() + "",
                                 it
                             ), {
-                                LogUtils.i("截图上传成功！")
+                                LogUtils.print("截图地址上传成功！")
                             }, {
                                 toast(it)
                             })
