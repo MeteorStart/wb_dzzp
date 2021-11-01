@@ -95,7 +95,8 @@ class MyApplication : Application() {
                     //当百分比为100时下载结束，调用结束回调，并传出下载后的本地路径
                     if ((100 * currentLength / totalLength!!).toInt() == 100) {
                         LogUtils.printError("下载完成")
-                        UpDateUtils.pmInstall("/sdcard/update.apk")
+//                        UpDateUtils.pmInstall("/sdcard/update.apk")
+                        UpDateUtils.install("/sdcard/update.apk")
                     }
                 }
             }

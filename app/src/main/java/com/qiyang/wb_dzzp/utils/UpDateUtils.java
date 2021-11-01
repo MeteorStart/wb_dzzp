@@ -1,9 +1,17 @@
 package com.qiyang.wb_dzzp.utils;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
 import com.jtkj.dzzp_52_screen.utils.AppPrefsUtils;
 import com.qiyang.wb_dzzp.MyApplication;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
@@ -81,5 +89,68 @@ public class UpDateUtils {
         } else { // 未知情况
             return false;
         }
+    }
+
+    public static void install(String filePath) {
+        File apkfile = new File(filePath);
+        if (!apkfile.exists()) {
+            return;
+        }
+        chmod("777", filePath); //更改文件权限
+        String command = "pm install " + "-r " + filePath;
+        String com = "chmod 777 " + filePath;
+        String start = "am start -n \"com.jtkjStation.app" +
+                "/com.jtkjStation.app.business.main.SplashActivity\" -a android.intent.action.MAIN";
+        Process process = null;
+        DataOutputStream os = null;
+
+        try {
+            process = Runtime.getRuntime().exec("su");
+            os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes(com + "\n");
+            os.flush();
+            Thread.sleep(100);
+            os.writeBytes(command + "\n");
+            os.flush();
+            Thread.sleep(100);;
+            os.writeBytes(start + "\n");
+            os.flush();
+            Thread.sleep(100);
+            os.writeBytes("exit\n");
+            Thread.sleep(100);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            restartApplication(90000);
+        }
+    }
+
+    /**
+     * 获取权限
+     * @param permission 权限
+     * @param path       路径
+     */
+    public static void chmod(String permission, String path) {
+        try {
+            String command = "chmod " + permission + " " + path;
+            Runtime runtime = Runtime.getRuntime();
+            runtime.exec(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //重启应用
+    public static void restartApplication(long time) {
+        Intent mStartActivity = MyApplication.myApplication.getPackageManager()
+                .getLaunchIntentForPackage(MyApplication.myApplication.getPackageName());
+        int mPendingIntentId = 1234567;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(MyApplication.myApplication
+                , mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) MyApplication.myApplication.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + time, mPendingIntent);
+        System.exit(0);
     }
 }
