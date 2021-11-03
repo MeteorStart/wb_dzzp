@@ -317,6 +317,31 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+
+    fun upLoadLogFile(file: File, success: (String) -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val sim = FileUtils.getSim()
+                val params = HashMap<String, Any>()
+                params["cityCode"] = BaseConfig.CITY_ID
+                params["devCode"] = sim
+                val requestBody: RequestBody =
+                    RequestBody.create("application/zip".toMediaTypeOrNull(), file)
+                val body: MultipartBody.Part =
+                    MultipartBody.Part.createFormData("file", file.name, requestBody)
+                val result = busRepository.upLoadFile(params, body)
+                if (result.code == SUCESS) {
+                    success(result.data.toString())
+                } else {
+                    fail(result.msg)
+                }
+            }
+            onError = {
+                fail(it.localizedMessage)
+            }
+        }
+    }
+
     fun download(fileUrl: String, success: () -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
@@ -331,4 +356,22 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         }
     }
 
+    fun downloadVideo(fileUrl: String, success: (String) -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val result = busRepository.download(fileUrl)
+                LogUtils.print("1")
+                var file = File("sdcard/video.mp4")
+                MyApplication.myApplication.writeFile2Disk(result, file)
+                if (file.exists()){
+                    success("sdcard/video.mp4")
+                }else{
+                    fail(result.message())
+                }
+            }
+            onError = {
+                fail(it.localizedMessage)
+            }
+        }
+    }
 }

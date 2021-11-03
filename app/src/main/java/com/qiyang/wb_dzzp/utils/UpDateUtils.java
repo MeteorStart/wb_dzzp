@@ -99,8 +99,8 @@ public class UpDateUtils {
         chmod("777", filePath); //更改文件权限
         String command = "pm install " + "-r " + filePath;
         String com = "chmod 777 " + filePath;
-        String start = "am start -n \"com.jtkjStation.app" +
-                "/com.jtkjStation.app.business.main.SplashActivity\" -a android.intent.action.MAIN";
+        String start = "am start -n \"com.qiyang.wb_dzzp" +
+                "/com.qiyang.wb_dzzp.ui.StartActivity\" -a android.intent.action.MAIN";
         Process process = null;
         DataOutputStream os = null;
 

@@ -30,14 +30,15 @@ data class RegisterBody(
  * @email: lx802315@163.com
  */
 data class CurVersionBody(
-    val apk: String,
-    val below: String,
+    val apk: String?,
+    val below: String?,
     val cityCode: String,
     val devCode: String,
-    val notice: String,
-    val picture: String,
-    val video: String
+    val notice: String?,
+    val picture: String?,
+    val video: String?
 )
+
 
 /**
  * @name: 上送设置信息

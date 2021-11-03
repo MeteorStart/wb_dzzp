@@ -10,17 +10,16 @@ import com.google.gson.Gson
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.base.BaseConfig
-import com.qiyang.wb_dzzp.data.DeviceConfigBean
-import com.qiyang.wb_dzzp.data.Route
-import com.qiyang.wb_dzzp.data.StationBody
-import com.qiyang.wb_dzzp.data.UpHeartBody
+import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.databinding.ActivityMainBinding
 import com.qiyang.wb_dzzp.mqtt.*
 import com.qiyang.wb_dzzp.mqtt.EnventBean.UpDataEvent
+import com.qiyang.wb_dzzp.mqtt.EnventBean.UpdateEvent
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.*
 import com.qiyang.wb_dzzp.viewmodel.MainModel
 import kotlinx.android.synthetic.main.activity_main.*
+import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.toast
 import java.io.File
 
@@ -64,7 +63,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
         val regId = FileUtils.getEquipId() + ""
         when {
             sim.isNotEmpty() -> {
-                getStation(sim)
                 getWeather(sim)
                 restart(sim)
                 getConfig(regId)
@@ -127,7 +125,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             tv_error.visibility = View.GONE
             if (it.devCode.isNotEmpty()) {
                 FileUtils.saveSim(it.devCode)
-                getStation(it.devCode)
+//                getStation(it.devCode)
             }
             initMqtt(it)
         }, {
@@ -232,9 +230,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
 //    通知消息，type说明：
 //    升级 notice_apk
 //    文字 notice_notice
-//    二维码 notice_qrCode
 //    图片 notice_picture
-//    底部 notice_below
+//    图片 notice_video
     override fun setMessage(message: String?) {
         // 下行数据通知
         try {
@@ -247,15 +244,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             when (type) {
                 //日志下发
                 "logUp" -> {
-
+                    logUp()
                 }
                 //截图下发
                 "screenshot" -> {
                     screenShot()
-                }
-                //设置下发
-                "operationSet" -> {
-
                 }
                 //升级下发
                 "notice_apk" -> {
@@ -264,23 +257,39 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                         gson.fromJson(data, UpDataEvent::class.java)
                     mViewModel.download(pushBean.data.url, {
                         LogUtils.print("下载成功")
+                        sendNotice(type, pushBean.data.version)
                     }, {
-
+                        LogUtils.printError(it)
                     })
-                }
-                //图片下发
-                "notice_picture" -> {
-
                 }
                 //文字通知下发
                 "notice_notice" -> {
+                    LogUtils.print("下发文字通知")
+                    val pushBean = gson.fromJson(data, UpDataEvent::class.java)
+                    if (!pushBean.data.content.isNullOrEmpty()) {
+                        LogUtils.print(pushBean.data.content)
+                        tv_notice.text = pushBean.data.content
+                        sendNotice(type, pushBean.data.version)
+                    }
                 }
-                //二维码下发
-                "notice_qrCode" -> {
+                //视频下发
+                "notice_video" -> {
+                    LogUtils.print("下发视频通知")
+                    val pushBean = gson.fromJson(data, UpDataEvent::class.java)
+                    mViewModel.downloadVideo(pushBean.data.url, {
+                        LogUtils.print("下载成功")
+                        initVideoView(it)
+                        sendNotice(type, pushBean.data.version)
+                    }, {
+                        LogUtils.printError(it)
+                    })
+                }
+                //设置下发
+                "operationSet" -> {
 
                 }
-                //底部图下发
-                "notice_below" -> {
+                //图片下发
+                "notice_picture" -> {
 
                 }
             }
@@ -289,6 +298,35 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             LogUtils.print(e.toString())
         }
 
+    }
+
+    private fun logUp() {
+        LogUtils.printError("日志上传")
+
+        //压缩文件夹
+        val cityCode = BaseConfig.CITY_ID
+        val sim = FileUtils.getSim()
+        ZipUtils.ZipFolder("sdcard/$cityCode/$sim", "sdcard/${sim}_logs.zip")
+
+        val file = File("sdcard/${sim}_logs.zip")
+
+        if (file.exists()) {
+            mViewModel.upLoadLogFile(file, {
+                LogUtils.print("日志文件上传成功")
+                mViewModel.logUp(
+                    UpHeartBody(
+                        BaseConfig.CITY_ID,
+                        FileUtils.getSim() + "",
+                        it
+                    ), {
+                        LogUtils.print("日志地址上传成功！")
+                    }, {
+                        toast(it)
+                    })
+            }, {
+
+            })
+        }
     }
 
     override fun setOnLineStatus(status: String?) {
@@ -346,4 +384,69 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
         }
     }
 
+    fun sendNotice(type: String, version: String) {
+        var curVersionBody: CurVersionBody
+        when (type) {
+            "notice_apk" -> {
+                curVersionBody = CurVersionBody(
+                    version,
+                    null,
+                    BaseConfig.CITY_ID,
+                    FileUtils.getSim(),
+                    null,
+                    null,
+                    null
+                )
+            }
+            "notice_notice" -> {
+                curVersionBody = CurVersionBody(
+                    null,
+                    null,
+                    BaseConfig.CITY_ID,
+                    FileUtils.getSim(),
+                    version,
+                    null,
+                    null
+                )
+            }
+            "notice_picture" -> {
+                curVersionBody = CurVersionBody(
+                    null,
+                    null,
+                    BaseConfig.CITY_ID,
+                    FileUtils.getSim(),
+                    null,
+                    version,
+                    null
+                )
+            }
+            "notice_video" -> {
+                curVersionBody = CurVersionBody(
+                    null,
+                    null,
+                    BaseConfig.CITY_ID,
+                    FileUtils.getSim(),
+                    null,
+                    null,
+                    version
+                )
+            }
+            else -> {
+                curVersionBody = CurVersionBody(
+                    null,
+                    null,
+                    BaseConfig.CITY_ID,
+                    FileUtils.getSim(),
+                    null,
+                    null,
+                    null
+                )
+            }
+        }
+        mViewModel.curVersion(curVersionBody, {
+            LogUtils.print("回传版本成功：${type + version}")
+        }, {
+            LogUtils.print("回传版本失败：${type + version} + $it")
+        })
+    }
 }

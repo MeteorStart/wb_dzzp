@@ -235,7 +235,7 @@ public class MQTTService extends Service {
                 iOnLineCallBack.setOnLineStatus("离线");
                 // isSet = false;
             }
-//            doClientConnection();
+            doClientConnection();
             // 连接失败，重连
             SharedPreferencesUtils.putString(MyApplication.context, "deviceStatus", "离线");
         }
