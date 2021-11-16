@@ -192,7 +192,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             block = {
                 val result = busRepository.curVersion(body)
                 if (result.code == SUCESS) {
-
+                    success()
                 } else {
                     fail(result.msg)
                 }

@@ -1,25 +1,30 @@
 package com.qiyang.wb_dzzp.ui
 
 import android.content.Intent
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.media.MediaPlayer
-import android.os.Bundle
-import android.os.Environment
+import android.os.*
 import android.view.View
 import android.widget.MediaController
 import com.google.gson.Gson
 import com.qiyang.wb_dzzp.R
+import com.qiyang.wb_dzzp.allcontrol.ControlDevicesProtocol
+import com.qiyang.wb_dzzp.allcontrol.DoorControl
+import com.qiyang.wb_dzzp.allcontrol.WaterSensorControl
 import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.databinding.ActivityMainBinding
 import com.qiyang.wb_dzzp.mqtt.*
 import com.qiyang.wb_dzzp.mqtt.EnventBean.UpDataEvent
-import com.qiyang.wb_dzzp.mqtt.EnventBean.UpdateEvent
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.*
+import com.qiyang.wb_dzzp.utils.FileUtils
 import com.qiyang.wb_dzzp.viewmodel.MainModel
 import kotlinx.android.synthetic.main.activity_main.*
-import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.toast
 import java.io.File
 
@@ -36,6 +41,38 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     }
 
     private var serviceConnection: MyServiceConnection? = null
+
+    val TEMPERATURE_SHOW = 1
+    val HUMITURE_SHOW = 2
+    var tempValue = 0f
+    var humiValue = 0f
+
+    var myHandler: Handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                0 -> LogUtils.print("门禁结果 ：关门 !")
+                1 -> LogUtils.print("门禁结果 ：开门 !")
+            }
+        }
+    }
+
+    var waterSensorHandler: Handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                0 -> LogUtils.print("水浸传感器状态 ：没检测到有水 !")
+                1 -> LogUtils.print("水浸传感器状态 ：检测到有水  !")
+            }
+        }
+    }
+
+    var myHumHandler: Handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                TEMPERATURE_SHOW -> LogUtils.print("温度：$tempValue°")
+                HUMITURE_SHOW -> LogUtils.print("湿度：$humiValue％")
+            }
+        }
+    }
 
     override fun getLayoutId(): Int = R.layout.activity_main
 
@@ -74,6 +111,108 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 showErrorMsg("网络异常，请检查网络！")
             }
         }
+
+        initDoorIControl()
+
+        initWaterControl()
+
+        initHumidity()
+    }
+
+    /**
+     * @description: 温湿度传感器
+     * @date:  6:54 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun initHumidity() {
+        val sm = this.getSystemService(SENSOR_SERVICE) as SensorManager
+        val pm = this.getSystemService(POWER_SERVICE) as PowerManager
+        pm.isScreenOn
+        val temperature = sm.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        val humidity = sm.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
+        sm.registerListener(
+            mySensorListener,
+            temperature,
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
+        sm.registerListener(
+            mySensorListener,
+            humidity,
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
+    }
+
+    private val mySensorListener: SensorEventListener = object : SensorEventListener {
+        override fun onAccuracyChanged(sensor: Sensor, degree: Int) {
+        }
+
+        override fun onSensorChanged(event: SensorEvent) {
+            // 传感器信息改变时执行该方法
+            val con: ControlDevicesProtocol = ControlDevicesProtocol.getInstance()
+            val msg: Message
+            val values = event.values
+            if (values.size <= 0) return
+            val type = event.sensor.type
+            when (type) {
+                Sensor.TYPE_AMBIENT_TEMPERATURE -> {
+                    tempValue = values[0]
+                    msg =
+                        myHumHandler.obtainMessage(TEMPERATURE_SHOW)
+                    myHumHandler.sendMessage(msg)
+                }
+                Sensor.TYPE_RELATIVE_HUMIDITY -> {
+                    humiValue = values[0]
+                    msg =
+                        myHumHandler.obtainMessage(HUMITURE_SHOW)
+                    myHumHandler.sendMessage(msg)
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
+    /**
+     * @description: 水浸传感器
+     * @date: 11/3/21 5:52 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun initWaterControl() {
+        object : WaterSensorControl() {
+            override fun waterSensorEvent(open_or_close: Int) {
+                val msg: Message
+                if (open_or_close == 0) {
+                    msg = waterSensorHandler.obtainMessage(0)
+                    waterSensorHandler.sendMessage(msg)
+                } else if (open_or_close == 1) {
+                    msg = waterSensorHandler.obtainMessage(1)
+                    waterSensorHandler.sendMessage(msg)
+                }
+            }
+        }.start()
+    }
+
+    /**
+     * @description: 门控传感器
+     * @date: 11/3/21 5:53 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun initDoorIControl() {
+        object : DoorControl() {
+            override fun doorEvent(open_or_close: Int) {
+                val msg: Message
+                if (open_or_close == 0) {
+                    msg = myHandler.obtainMessage(0)
+                    myHandler.sendMessage(msg)
+                } else if (open_or_close == 1) {
+                    msg = myHandler.obtainMessage(1)
+                    myHandler.sendMessage(msg)
+                }
+            }
+        }.start()
     }
 
     /**
@@ -125,7 +264,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             tv_error.visibility = View.GONE
             if (it.devCode.isNotEmpty()) {
                 FileUtils.saveSim(it.devCode)
-//                getStation(it.devCode)
+                getStation(it.devCode)
             }
             initMqtt(it)
         }, {
@@ -225,13 +364,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     var data = ""
 
     //    日志消息，type=logUp
-//    截图消息，type=screenshot
-//    运营设置消息，type=operationSet
-//    通知消息，type说明：
-//    升级 notice_apk
-//    文字 notice_notice
-//    图片 notice_picture
-//    图片 notice_video
+    //    截图消息，type=screenshot
+    //    运营设置消息，type=operationSet
+    //    通知消息，type说明：
+    //    升级 notice_apk
+    //    文字 notice_notice
+    //    图片 notice_picture
+    //    图片 notice_video
     override fun setMessage(message: String?) {
         // 下行数据通知
         try {
