@@ -28,6 +28,9 @@ object BaseConfig {
     //默认获取线路信息时间
     const val DEFUT_GET_STATION_TIME = 10000L
 
+    //默认上传硬件时间
+    const val DEFUT_SEND_STATION_TIME = 1000L * 60 * 5
+
     //数据正常跳转
     const val NORMAL_STATE = 1
 

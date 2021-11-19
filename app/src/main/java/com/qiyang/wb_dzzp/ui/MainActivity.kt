@@ -10,6 +10,7 @@ import android.os.*
 import android.view.View
 import android.widget.MediaController
 import com.google.gson.Gson
+import com.qiyang.wb_dzzp.MyApplication
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.allcontrol.ControlDevicesProtocol
 import com.qiyang.wb_dzzp.allcontrol.DoorControl
@@ -68,8 +69,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     var myHumHandler: Handler = object : Handler() {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
-                TEMPERATURE_SHOW -> LogUtils.print("温度：$tempValue°")
-                HUMITURE_SHOW -> LogUtils.print("湿度：$humiValue％")
+                TEMPERATURE_SHOW -> {
+                    mViewModel.tempValue.value = tempValue.toString()
+//                    LogUtils.print("温度：$tempValue°")
+
+                }
+
+                HUMITURE_SHOW -> {
+                    mViewModel.humiValue.value = humiValue.toString()
+//                    LogUtils.print("湿度：$humiValue％")
+                }
             }
         }
     }
@@ -90,6 +99,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     }
 
     private fun initRecy() {
+        tv_version.text = "版本号：v" + AppUtils.getVerName(this)
+
         recy_main.layoutManager =
             RecycleViewUtils.getVerticalLayoutManagerNoDecoration(this, recy_main)
         recy_main.adapter = mMainAdapter
@@ -100,6 +111,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
         val regId = FileUtils.getEquipId() + ""
         when {
             sim.isNotEmpty() -> {
+                tv_sim.text = sim
                 getWeather(sim)
                 restart(sim)
                 getConfig(regId)
@@ -247,7 +259,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
      */
     private fun getStation(sim: String) {
         mViewModel.stationCycle(StationBody(BaseConfig.CITY_ID, sim), {
-            mMainAdapter.setNewData(it.routes)
+            if (MyApplication.deviceConfigBean.set.operationTime != null &&
+                mViewModel.isStandTime(MyApplication.deviceConfigBean.set.operationTime)
+            ) {
+                mMainAdapter.setNewData(it.routes)
+            } else {
+                showErrorMsg("不在运营时间")
+            }
         }, {
             toast(it)
         })
@@ -261,12 +279,58 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
      */
     private fun getConfig(regId: String) {
         mViewModel.getConfigCycle(regId, {
-            tv_error.visibility = View.GONE
-            if (it.devCode.isNotEmpty()) {
-                FileUtils.saveSim(it.devCode)
-                getStation(it.devCode)
+            if (it.set.operationTime != null && mViewModel.isStandTime(it.set.operationTime)) {
+                tv_error.visibility = View.GONE
+                if (it.devCode.isNotEmpty()) {
+                    FileUtils.saveSim(it.devCode)
+                    getStation(it.devCode)
+                    tv_sim.text = it.devCode
+                    mViewModel.repeatSend(it.devCode, {
+                        LogUtils.print("上传硬件数据成功！")
+                    }, {
+                        toast(it)
+                    })
+
+                }
+                initMqtt(it)
+            } else {
+                showErrorMsg("不在运营时间")
             }
-            initMqtt(it)
+
+        }, {
+            showErrorMsg(it)
+        }, {
+            toast(it)
+        })
+    }
+
+
+    /**
+     * @description: 获取配置信息
+     * @date: 10/19/21 3:02 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun getConfigOne(regId: String) {
+        mViewModel.getConfig(regId, {
+            if (mViewModel.isStandTime(it.set.operationTime)) {
+                tv_error.visibility = View.GONE
+                if (it.devCode.isNotEmpty()) {
+                    FileUtils.saveSim(it.devCode)
+                    getStation(it.devCode)
+                    tv_sim.text = it.devCode
+                    mViewModel.repeatSend(it.devCode, {
+                        LogUtils.print("上传硬件数据成功！")
+                    }, {
+                        toast(it)
+                    })
+
+                }
+                initMqtt(it)
+            } else {
+                showErrorMsg("不在运营时间")
+            }
+
         }, {
             showErrorMsg(it)
         }, {
@@ -291,17 +355,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     private fun showErrorMsg(it: String) {
         tv_error.visibility = View.VISIBLE
         tv_error.text = it
-    }
-
-    private fun uploadFile(fileName: String) {
-        val file = FileHelper().getFile(fileName)
-        if (file != null) {
-            mViewModel.upLoadFile(file, {
-
-            }, {
-
-            })
-        }
     }
 
     var mediaController: MediaController? = null
@@ -425,7 +478,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 }
                 //设置下发
                 "operationSet" -> {
-
+                    getConfigOne(FileUtils.getSim())
                 }
                 //图片下发
                 "notice_picture" -> {

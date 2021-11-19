@@ -47,6 +47,7 @@ public class MQTTService extends Service {
 
     private static String publishTopic = "board/onlineStatus/device";   //发送心跳topic
     private static String deadTopic = MyApplication.deviceConfigBean.getIotWillTopic(); //遗愿topic
+    private static String onlineTopic = MyApplication.deviceConfigBean.getIotOnlineTopic(); //遗愿topic
 
     //private String clientId = "1001000011";//客户端标识
 
@@ -121,6 +122,15 @@ public class MQTTService extends Service {
         if (doConnect) {
             // doClientConnection();
         }
+    }
+
+    private String initOnlineMessgae() {
+        HeartBeats beats = new HeartBeats();
+        beats.setDevCode(deviceConfigBean.getDevCode());
+        beats.setCityCode(deviceConfigBean.getCityCode());
+        beats.setTime(AppDateMgr.timeStamp2Date(System.currentTimeMillis() + "", ""));
+        Gson gson = new Gson();
+        return gson.toJson(beats);
     }
 
     private String initWillMessgae() {
@@ -223,6 +233,12 @@ public class MQTTService extends Service {
             disconnectedBufferOptions.setPersistBuffer(false);
             disconnectedBufferOptions.setDeleteOldestMessages(false);
             client.setBufferOpts(disconnectedBufferOptions);
+            String onlineString = initOnlineMessgae();
+            try {
+                client.publish(MyApplication.deviceConfigBean.getIotOnlineTopic(), onlineString.getBytes(), 1, false);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
             subTopic();
         }
 

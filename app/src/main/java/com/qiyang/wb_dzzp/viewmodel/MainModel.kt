@@ -1,5 +1,6 @@
 package com.qiyang.wb_dzzp.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.kk.android.comvvmhelper.extension.safeLaunch
 import com.qiyang.wb_dzzp.MyApplication
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.base.BaseConfig.DEFUT_GET_STATION_TIME
+import com.qiyang.wb_dzzp.base.BaseConfig.DEFUT_SEND_STATION_TIME
 import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.SUCESS
 import com.qiyang.wb_dzzp.network.repository.BusRepository
@@ -18,6 +20,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -33,8 +36,14 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
     val temperature = MutableLiveData<String>()
     val weather = MutableLiveData<String>()
 
+    val tempValue = MutableLiveData<String>()
+    val humiValue = MutableLiveData<String>()
+
     //循环请求协程
     var repeatJob: Job? = null
+
+    //循环请求协程
+    var sendRepeatJob: Job? = null
 
     /**
      * @description: 设备注册
@@ -138,17 +147,36 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
     }
 
     /**
+     * @description: 循环上送硬件信息
+     * @date: 10/20/21 3:15 PM
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    fun repeatSend(devCode: String, success: () -> Unit, fail: (String) -> Unit) {
+        sendRepeatJob = viewModelScope.repeatLaunch(DEFUT_SEND_STATION_TIME, {
+            extend(devCode, success, fail)
+        }, Int.MAX_VALUE, 0)
+    }
+
+    /**
      * @description: 上送硬件信息
      * @date: 10/20/21 3:15 PM
      * @author: Meteor
      * @email: lx802315@163.com
      */
-    fun extend(body: ExtendBody, success: () -> Unit, fail: (String) -> Unit) {
+    fun extend(devCode: String, success: () -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
-                val result = busRepository.extend(body)
+                val result = busRepository.extend(
+                    ExtendBody(
+                        devCode = devCode,
+                        cityCode = BaseConfig.CITY_ID,
+                        temp = tempValue.value.toString(),
+                        humidity = humiValue.value.toString()
+                    )
+                )
                 if (result.code == SUCESS) {
-
+                    success()
                 } else {
                     fail(result.msg)
                 }
@@ -363,9 +391,9 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
                 LogUtils.print("1")
                 var file = File("sdcard/video.mp4")
                 MyApplication.myApplication.writeFile2Disk(result, file)
-                if (file.exists()){
+                if (file.exists()) {
                     success("sdcard/video.mp4")
-                }else{
+                } else {
                     fail(result.message())
                 }
             }
@@ -374,4 +402,45 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             }
         }
     }
+
+    /**
+     * @description: 是否在运营时间
+     * @date: 2019/10/31 16:10
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    @SuppressLint("SimpleDateFormat")
+    fun isStandTime(time: String): Boolean {
+        val byteArray = time.split("|")
+        if (byteArray != null && byteArray.size > 3) {
+            val format = "HH:mm"
+
+            val nowTimeStr = SimpleDateFormat(format).format(Date())
+            val startTimeStr = byteArray[0] + ":" + byteArray[1]
+            val endTimeStr = byteArray[2] + ":" + byteArray[3]
+
+            val nowTime = SimpleDateFormat(format).parse(nowTimeStr)
+            val startTime = SimpleDateFormat(format).parse(startTimeStr)
+            val endTime = SimpleDateFormat(format).parse(endTimeStr)
+            if (Date().time == startTime.time
+                || Date().time == endTime.time
+            ) {
+                return true
+            }
+
+            val date = Calendar.getInstance()
+            date.time = nowTime
+
+            val begin = Calendar.getInstance()
+            begin.time = startTime
+
+            val end = Calendar.getInstance()
+            end.time = endTime
+
+            return date.after(begin) && date.before(end)
+        } else {
+            return true
+        }
+    }
+
 }

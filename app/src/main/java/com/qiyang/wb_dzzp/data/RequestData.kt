@@ -105,29 +105,39 @@ data class StationBody(
  * @email: lx802315@163.com
  */
 data class ExtendBody(
-    val batteryControlTemp: Int,
-    val batteryStatus: String,
-    val chargeBattery: String,
-    val chargeI: Int,
-    val chargeV: Int,
-    val cityCode: String,
-    val devCode: String,
-    val dischargeI: Int,
-    val dischargeV: Int,
-    val evmControlTemp: Int,
-    val fanStatus: String,
-    val flow: Int,
-    val humidity: Int,
-    val inWaterStatus: String,
-    val mainCycle: Int,
-    val mainSoc: Int,
-    val mainV: Int,
-    val secCycle: Int,
-    val secSoc: Int,
-    val secV: Int,
-    val temp: Int,
-    val useBattery: String
-)
+    val batteryControlTemp: Int?,
+    val batteryStatus: String?,
+    val chargeBattery: String?,
+    val chargeI: Int?,
+    val chargeV: Int?,
+    val cityCode: String?,
+    val devCode: String?,
+    val dischargeI: Int?,
+    val dischargeV: Int?,
+    val evmControlTemp: Int?,
+    val fanStatus: String?,
+    val flow: Int?,
+    val humidity: String?,
+    val inWaterStatus: String?,
+    val mainCycle: Int?,
+    val mainSoc: Int?,
+    val mainV: Int?,
+    val secCycle: Int?,
+    val secSoc: Int?,
+    val secV: Int?,
+    val temp: String?,
+    val useBattery: String?
+) {
+    constructor(cityCode: String?, devCode: String?, humidity: String?, temp: String?) : this(
+        null, null, null,
+        null, null, cityCode,
+        devCode, null, null,
+        null, null, null,
+        humidity, null, null,
+        null, null, null,
+        null, null, temp, null
+    )
+}
 
 /**
  * @name: 获取天气
