@@ -115,6 +115,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 getWeather(sim)
                 restart(sim)
                 getConfig(regId)
+                sendNotice("notice_apk", AppUtils.getVerName(this))
             }
             regId.isNotEmpty() -> {
                 getConfig(regId)
@@ -262,12 +263,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             if (MyApplication.deviceConfigBean.set.operationTime != null &&
                 mViewModel.isStandTime(MyApplication.deviceConfigBean.set.operationTime)
             ) {
+                tv_error.visibility = View.GONE
                 mMainAdapter.setNewData(it.routes)
             } else {
                 showErrorMsg("不在运营时间")
             }
         }, {
-            toast(it)
+            if (it.equals("不在运营时间")){
+                showErrorMsg("不在运营时间")
+            }else{
+                toast(it)
+            }
         })
     }
 
@@ -279,23 +285,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
      */
     private fun getConfig(regId: String) {
         mViewModel.getConfigCycle(regId, {
-            if (it.set.operationTime != null && mViewModel.isStandTime(it.set.operationTime)) {
-                tv_error.visibility = View.GONE
-                if (it.devCode.isNotEmpty()) {
-                    FileUtils.saveSim(it.devCode)
-                    getStation(it.devCode)
-                    tv_sim.text = it.devCode
-                    mViewModel.repeatSend(it.devCode, {
-                        LogUtils.print("上传硬件数据成功！")
-                    }, {
-                        toast(it)
-                    })
-
-                }
-                initMqtt(it)
-            } else {
-                showErrorMsg("不在运营时间")
+            tv_error.visibility = View.GONE
+            if (it.devCode.isNotEmpty()) {
+                FileUtils.saveSim(it.devCode)
+                getStation(it.devCode)
+                tv_sim.text = it.devCode
+                mViewModel.repeatSend(it.devCode, {
+                    LogUtils.print("上传硬件数据成功！")
+                }, {
+                    toast(it)
+                })
             }
+            initMqtt(it)
 
         }, {
             showErrorMsg(it)
@@ -315,22 +316,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
         mViewModel.getConfig(regId, {
             if (mViewModel.isStandTime(it.set.operationTime)) {
                 tv_error.visibility = View.GONE
-                if (it.devCode.isNotEmpty()) {
-                    FileUtils.saveSim(it.devCode)
-                    getStation(it.devCode)
-                    tv_sim.text = it.devCode
-                    mViewModel.repeatSend(it.devCode, {
-                        LogUtils.print("上传硬件数据成功！")
-                    }, {
-                        toast(it)
-                    })
-
-                }
-                initMqtt(it)
             } else {
                 showErrorMsg("不在运营时间")
             }
-
         }, {
             showErrorMsg(it)
         }, {
@@ -447,9 +435,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                     LogUtils.print("下发升级程序")
                     val pushBean =
                         gson.fromJson(data, UpDataEvent::class.java)
+                    sendNotice(type, pushBean.data.version)
                     mViewModel.download(pushBean.data.url, {
                         LogUtils.print("下载成功")
-                        sendNotice(type, pushBean.data.version)
                     }, {
                         LogUtils.printError(it)
                     })

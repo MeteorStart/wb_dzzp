@@ -128,11 +128,11 @@ data class ExtendBody(
     val temp: String?,
     val useBattery: String?
 ) {
-    constructor(cityCode: String?, devCode: String?, humidity: String?, temp: String?) : this(
+    constructor(cityCode: String?, devCode: String?, humidity: String?, temp: String?,flow: Int?) : this(
         null, null, null,
         null, null, cityCode,
         devCode, null, null,
-        null, null, null,
+        null, null, flow,
         humidity, null, null,
         null, null, null,
         null, null, temp, null

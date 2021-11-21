@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jtkj.dzzp_52_screen.utils.AppPrefsUtils
 import com.kk.android.comvvmhelper.extension.repeatLaunch
 import com.kk.android.comvvmhelper.extension.safeLaunch
 import com.qiyang.wb_dzzp.MyApplication
@@ -15,6 +16,7 @@ import com.qiyang.wb_dzzp.network.http.SUCESS
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.FileUtils
 import com.qiyang.wb_dzzp.utils.LogUtils
+import com.qiyang.wb_dzzp.utils.NetworkUtil
 import kotlinx.coroutines.Job
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -120,7 +122,13 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
      */
     fun stationCycle(body: StationBody, success: (StationBean) -> Unit, fail: (String) -> Unit) {
         repeatJob = viewModelScope.repeatLaunch(DEFUT_GET_STATION_TIME, {
-            station(body, success, fail)
+            if (MyApplication.deviceConfigBean.set.operationTime != null &&
+                isStandTime(MyApplication.deviceConfigBean.set.operationTime)
+            ) {
+                station(body, success, fail)
+            }else{
+                fail("不在运营时间")
+            }
         }, Int.MAX_VALUE, 0)
     }
 
@@ -167,12 +175,14 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
     fun extend(devCode: String, success: () -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
+                var network = getNetworkTrafficHour()
                 val result = busRepository.extend(
                     ExtendBody(
                         devCode = devCode,
                         cityCode = BaseConfig.CITY_ID,
                         temp = tempValue.value.toString(),
-                        humidity = humiValue.value.toString()
+                        humidity = humiValue.value.toString(),
+                        flow = network.toInt()
                     )
                 )
                 if (result.code == SUCESS) {
@@ -441,6 +451,31 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         } else {
             return true
         }
+    }
+
+    /**
+     * @description: 获取一小时内的流量消耗
+     * @date: 2019/10/11 9:33
+     * @author: Meteor
+     * @email: lx802315@163.com
+     */
+    private fun getNetworkTrafficHour(): Double {
+        var oldUpTraffic = AppPrefsUtils.getLong(BaseConfig.OLD_UP_TRAFFIC)
+
+        val totlaBytes = NetworkUtil.getTotalNetBytes()
+
+        //设备重启
+        if (totlaBytes - oldUpTraffic < 0) {
+            oldUpTraffic = 0
+        }
+
+        val upTraffic = (totlaBytes - oldUpTraffic).toDouble() / 1024
+        LogUtils.print("总消耗：${upTraffic}Kb")
+
+        //替换流量
+        AppPrefsUtils.putLong(BaseConfig.OLD_UP_TRAFFIC, totlaBytes)
+
+        return upTraffic
     }
 
 }

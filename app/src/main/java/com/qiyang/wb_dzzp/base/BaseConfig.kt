@@ -22,6 +22,9 @@ object BaseConfig {
     //默认运营时间
     const val STAND_TIME = "05|00|22|30"
 
+    //上次上传的流量值
+    val OLD_UP_TRAFFIC = "oldUpTraffic"
+
     //默认滚动时间
     const val DEFUT_SCOLL_TIME = 30000L
 
