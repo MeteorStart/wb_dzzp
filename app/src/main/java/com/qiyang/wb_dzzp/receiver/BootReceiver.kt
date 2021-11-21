@@ -26,7 +26,7 @@ class BootReceiver : BroadcastReceiver() {
                 Intent(context, StartActivity::class.java), PendingIntent.FLAG_CANCEL_CURRENT
             )
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 30000, mPendingIntent)
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 10000, mPendingIntent)
             LogUtils.print("Auto Run After 20s")
         }
     }

@@ -70,4 +70,12 @@ object BaseConfig {
     //    NOT_RUN：非运营
     const val STATES_NOT_RUN = "NOT_RUN"
 
+    const val DEFUT_TEXT = "欢迎使用公交电子站牌！"
+
+    const val NOTICE = "NOTICE"
+
+    const val PIC = "PIC"
+
+    const val VIDEO = "VIDEO"
+
 }

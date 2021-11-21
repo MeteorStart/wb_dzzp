@@ -384,7 +384,6 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         viewModelScope.safeLaunch {
             block = {
                 val result = busRepository.download(fileUrl)
-                LogUtils.print("1")
                 var file = File("sdcard/update.apk")
                 MyApplication.myApplication.writeFile2Disk(result, file)
             }
@@ -398,11 +397,28 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
         viewModelScope.safeLaunch {
             block = {
                 val result = busRepository.download(fileUrl)
-                LogUtils.print("1")
                 var file = File("sdcard/video.mp4")
                 MyApplication.myApplication.writeFile2Disk(result, file)
                 if (file.exists()) {
                     success("sdcard/video.mp4")
+                } else {
+                    fail(result.message())
+                }
+            }
+            onError = {
+                fail(it.localizedMessage)
+            }
+        }
+    }
+
+    fun downloadPic(fileUrl: String, success: (String) -> Unit, fail: (String) -> Unit) {
+        viewModelScope.safeLaunch {
+            block = {
+                val result = busRepository.download(fileUrl)
+                var file = File("sdcard/pic.png")
+                MyApplication.myApplication.writeFile2Disk(result, file)
+                if (file.exists()) {
+                    success("sdcard/pic.png")
                 } else {
                     fail(result.message())
                 }

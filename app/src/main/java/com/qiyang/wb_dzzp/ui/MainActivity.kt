@@ -1,6 +1,7 @@
 package com.qiyang.wb_dzzp.ui
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -123,6 +124,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             else -> {
                 showErrorMsg("网络异常，请检查网络！")
             }
+        }
+
+        val notice = SharePreferencesUtils.getString(this, BaseConfig.NOTICE, "")
+        if (notice.isNotEmpty()) {
+            tv_notice.text = notice
+        } else {
+            tv_notice.text = BaseConfig.DEFUT_TEXT
+        }
+
+        val pic = SharePreferencesUtils.getString(this, BaseConfig.PIC, "")
+        if (pic.isNotEmpty()) {
+            showPic(pic)
+        }
+
+        val video = SharePreferencesUtils.getString(this, BaseConfig.VIDEO, "")
+        if (video.isNotEmpty()) {
+            initVideoView(video)
         }
 
         initDoorIControl()
@@ -269,9 +287,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 showErrorMsg("不在运营时间")
             }
         }, {
-            if (it.equals("不在运营时间")){
+            if (it.equals("不在运营时间")) {
                 showErrorMsg("不在运营时间")
-            }else{
+            } else {
                 toast(it)
             }
         })
@@ -348,6 +366,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     var mediaController: MediaController? = null
 
     fun initVideoView(url: String) {
+
+        video.visibility = View.VISIBLE
+        image.visibility = View.GONE
+
         video.pause()
         video.stopPlayback()
         val file = File(url)
@@ -446,23 +468,45 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 "notice_notice" -> {
                     LogUtils.print("下发文字通知")
                     val pushBean = gson.fromJson(data, UpDataEvent::class.java)
-                    if (!pushBean.data.content.isNullOrEmpty()) {
+                    if (pushBean.data.version.contains("-1")) {
                         LogUtils.print(pushBean.data.content)
-                        tv_notice.text = pushBean.data.content
+                        tv_notice.text = BaseConfig.DEFUT_TEXT
                         sendNotice(type, pushBean.data.version)
+                        SharedPreferencesUtils.putString(
+                            this,
+                            BaseConfig.NOTICE,
+                            ""
+                        )
+                    } else {
+                        if (!pushBean.data.content.isNullOrEmpty()) {
+                            SharedPreferencesUtils.putString(
+                                this,
+                                BaseConfig.NOTICE,
+                                pushBean.data.content
+                            )
+                            LogUtils.print(pushBean.data.content)
+                            tv_notice.text = pushBean.data.content
+                            sendNotice(type, pushBean.data.version)
+                        }
                     }
                 }
                 //视频下发
                 "notice_video" -> {
                     LogUtils.print("下发视频通知")
                     val pushBean = gson.fromJson(data, UpDataEvent::class.java)
-                    mViewModel.downloadVideo(pushBean.data.url, {
-                        LogUtils.print("下载成功")
-                        initVideoView(it)
-                        sendNotice(type, pushBean.data.version)
-                    }, {
-                        LogUtils.printError(it)
-                    })
+                    if (pushBean.data.version.contains("-1")) {
+                        SharePreferencesUtils.saveString(this, BaseConfig.VIDEO, "")
+                        initVideoView("")
+                    } else {
+                        mViewModel.downloadVideo(pushBean.data.url, {
+                            LogUtils.print("下载成功")
+                            SharePreferencesUtils.saveString(this, BaseConfig.VIDEO, it)
+                            initVideoView(it)
+                            sendNotice(type, pushBean.data.version)
+                        }, {
+                            LogUtils.printError(it)
+                        })
+                    }
                 }
                 //设置下发
                 "operationSet" -> {
@@ -470,6 +514,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 }
                 //图片下发
                 "notice_picture" -> {
+                    LogUtils.print("下发视频通知")
+                    val pushBean = gson.fromJson(data, UpDataEvent::class.java)
+                    if (pushBean.data.version.contains("-1")) {
+                        SharePreferencesUtils.saveString(this, BaseConfig.PIC, "")
+                        initVideoView("")
+                    } else {
+                        mViewModel.downloadPic(pushBean.data.url, {
+                            LogUtils.print("下载成功")
+                            SharePreferencesUtils.saveString(this, BaseConfig.PIC, it)
+                            showPic(it)
+                            sendNotice(type, pushBean.data.version)
+                        }, {
+                            LogUtils.printError(it)
+                        })
+                    }
 
                 }
             }
@@ -478,6 +537,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             LogUtils.print(e.toString())
         }
 
+    }
+
+    private fun showPic(url: String) {
+        var bitmap = BitmapFactory.decodeFile(url)
+        if (bitmap != null) {
+            image.setImageBitmap(bitmap)
+            video.visibility = View.GONE
+            image.visibility = View.VISIBLE
+            notifyVideo()
+        } else {
+            toast("图片设置异常，请联系管理员！")
+        }
     }
 
     private fun logUp() {
