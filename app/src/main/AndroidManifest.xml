@@ -39,7 +39,8 @@
         android:supportsRtl="true"
         android:name=".MyApplication"
         android:theme="@style/Theme.Wb_dzzp">
-        <activity android:name=".ui.MainActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".ui.MainActivity" android:screenOrientation="landscape"
+            android:fitsSystemWindows="true"/>
         <activity android:name=".ui.StartActivity" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

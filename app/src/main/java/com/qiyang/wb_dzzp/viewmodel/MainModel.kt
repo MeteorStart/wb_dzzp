@@ -398,7 +398,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             block = {
                 val result = busRepository.download(fileUrl)
                 var file = File("sdcard/video.mp4")
-                MyApplication.myApplication.writeFile2Disk(result, file)
+                MyApplication.myApplication.writeFile2DiskNoRestart(result, file)
                 if (file.exists()) {
                     success("sdcard/video.mp4")
                 } else {
@@ -416,7 +416,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             block = {
                 val result = busRepository.download(fileUrl)
                 var file = File("sdcard/pic.png")
-                MyApplication.myApplication.writeFile2Disk(result, file)
+                MyApplication.myApplication.writeFile2DiskNoRestart(result, file)
                 if (file.exists()) {
                     success("sdcard/pic.png")
                 } else {

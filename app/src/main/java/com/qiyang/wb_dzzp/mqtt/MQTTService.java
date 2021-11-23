@@ -17,7 +17,7 @@ import com.qiyang.wb_dzzp.data.DeviceConfigBean;
 import com.qiyang.wb_dzzp.network.http.UrlConstant;
 import com.qiyang.wb_dzzp.utils.AppDateMgr;
 import com.qiyang.wb_dzzp.utils.LogUtils;
-import com.qiyang.wb_dzzp.utils.SharedPreferencesUtils;
+import com.qiyang.wb_dzzp.utils.SharePreferencesUtils;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -198,7 +198,7 @@ public class MQTTService extends Service {
     }
 
     private void netWorkIsOk() {
-        String s = SharedPreferencesUtils.getString(this, "deviceStatus");
+        String s = SharePreferencesUtils.getString(this, "deviceStatus","");
         LogUtils.Companion.print("重启" + s);
         if (s.equals("离线")) {
 //            init();
@@ -253,7 +253,7 @@ public class MQTTService extends Service {
             }
 //            doClientConnection();
             // 连接失败，重连
-            SharedPreferencesUtils.putString(MyApplication.context, "deviceStatus", "离线");
+            SharePreferencesUtils.saveString(MyApplication.context, "deviceStatus", "离线");
         }
     };
 
@@ -312,12 +312,12 @@ public class MQTTService extends Service {
                 IGetMessageCallBack.setMessage(messageString);
             }
 
-            String deviveStatus = SharedPreferencesUtils.getString(MyApplication.context, "deviceStatus");
+            String deviveStatus = SharePreferencesUtils.getString(MyApplication.context, "deviceStatus","");
 
             if (iOnLineCallBack != null && !deviveStatus.equals("在线")) {
                 iOnLineCallBack.setOnLineStatus("在线");
             }
-            SharedPreferencesUtils.putString(MyApplication.context, "deviceStatus", "在线");
+            SharePreferencesUtils.saveString(MyApplication.context, "deviceStatus", "在线");
 
             if (isDisConnected) {
                 // publish("断线重连");
@@ -346,7 +346,7 @@ public class MQTTService extends Service {
                 //isSet = false;
             }
 
-            SharedPreferencesUtils.putString(MyApplication.context, "deviceStatus", "离线");
+            SharePreferencesUtils.saveString(MyApplication.context, "deviceStatus", "离线");
 
             if (null != client) {
                 Thread thread = new Thread(() -> {

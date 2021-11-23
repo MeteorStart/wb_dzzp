@@ -124,6 +124,58 @@ class MyApplication : Application() {
         }
     }
 
+    //将下载的文件写入本地存储
+    fun writeFile2DiskNoRestart(response: Response<ResponseBody>, file: File?) {
+        var currentLength: Long = 0
+        var os: OutputStream? = null
+
+        LogUtils.printError("开始写入文件")
+        val input = response.body()?.byteStream() //获取下载输入流
+        val totalLength = response.body()?.contentLength()
+
+        try {
+            os = FileOutputStream(file) //输出流
+            var len: Int = -1
+            val buff = ByteArray(1024)
+            var flag = true
+            while (flag) {
+                //读取数据，返回下标
+                len = input!!.read(buff)
+                flag = len != -1
+                if (flag) {
+                    os!!.write(buff, 0, len)
+                    currentLength += len.toLong()
+                    //当百分比为100时下载结束，调用结束回调，并传出下载后的本地路径
+                    if ((100 * currentLength / totalLength!!).toInt() == 100) {
+                        LogUtils.printError("下载完成")
+                    }
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            if (os != null) {
+                try {
+                    os!!.close() //关闭输出流
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
+            }
+            if (input != null) {
+                try {
+                    input!!.close() //关闭输入流
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+    }
+
+
     private fun initCrash() {
         if (!isApkInDebug(this)) {
             //崩溃处理

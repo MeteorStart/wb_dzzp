@@ -25,6 +25,7 @@ import com.qiyang.wb_dzzp.mqtt.EnventBean.UpDataEvent
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.*
 import com.qiyang.wb_dzzp.utils.FileUtils
+import com.qiyang.wb_dzzp.utils.UpDateUtils.restartApplication
 import com.qiyang.wb_dzzp.viewmodel.MainModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
@@ -94,7 +95,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
     override fun initActivity(savedInstanceState: Bundle?) {
         NavigationBarStatusBar(this, true)
         mBinding.model = mViewModel
-        initVideoView("")
         initRecy()
         initData()
     }
@@ -126,6 +126,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             }
         }
 
+        //判断是否有公告内容
         val notice = SharePreferencesUtils.getString(this, BaseConfig.NOTICE, "")
         if (notice.isNotEmpty()) {
             tv_notice.text = notice
@@ -133,14 +134,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             tv_notice.text = BaseConfig.DEFUT_TEXT
         }
 
+        //判断是否有图片内容
         val pic = SharePreferencesUtils.getString(this, BaseConfig.PIC, "")
         if (pic.isNotEmpty()) {
             showPic(pic)
-        }
-
-        val video = SharePreferencesUtils.getString(this, BaseConfig.VIDEO, "")
-        if (video.isNotEmpty()) {
-            initVideoView(video)
+        }else{
+            //判断是否有视频内容
+            val video = SharePreferencesUtils.getString(this, BaseConfig.VIDEO, "")
+            if (video.isNotEmpty()) {
+                initVideoView(video)
+            } else {
+                initVideoView("")
+            }
         }
 
         initDoorIControl()
@@ -282,6 +287,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 mViewModel.isStandTime(MyApplication.deviceConfigBean.set.operationTime)
             ) {
                 tv_error.visibility = View.GONE
+                tv_station_name.text = "当前站点：" + it.station.stationName
                 mMainAdapter.setNewData(it.routes)
             } else {
                 showErrorMsg("不在运营时间")
@@ -306,6 +312,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
             tv_error.visibility = View.GONE
             if (it.devCode.isNotEmpty()) {
                 FileUtils.saveSim(it.devCode)
+                tv_station_name.text = "当前站点：" + it.stationName
                 getStation(it.devCode)
                 tv_sim.text = it.devCode
                 mViewModel.repeatSend(it.devCode, {
@@ -372,13 +379,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
 
         video.pause()
         video.stopPlayback()
-        val file = File(url)
-        if (file.exists()) {
-            video.setVideoPath(url)
-        } else {
+        if (url.isNullOrEmpty()) {
             video.setVideoPath(
                 "android.resource://" + this.packageName.toString() + "/" + R.raw.mov1
             )
+        } else {
+            val file = File(url)
+            if (file.exists()) {
+                video.setVideoPath(url)
+            } else {
+                video.setVideoPath(
+                    "android.resource://" + this.packageName.toString() + "/" + R.raw.mov1
+                )
+            }
         }
         mediaController = MediaController(this)
         mediaController?.visibility = View.GONE
@@ -392,19 +405,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
         }
         video.setOnErrorListener(MediaPlayer.OnErrorListener { mediaPlayer, what, extra ->
             LogUtils.printError("视频播放错误码$what")
-            restartVideo(url)
+//            restartVideo(url)
             true
         })
     }
 
-    private fun restartVideo(url: String) {
-        try {
-            val proc = Runtime.getRuntime().exec(arrayOf("su", "-c", "reboot ")) //关机
-            proc.waitFor()
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
+//    private fun restartVideo(url: String) {
+//        try {
+//            val proc = Runtime.getRuntime().exec(arrayOf("su", "-c", "reboot ")) //关机
+//            proc.waitFor()
+//        } catch (ex: Exception) {
+//            ex.printStackTrace()
+//        }
+//    }
 
     fun notifyVideo() {
         LogUtils.printError("暂停视频播放")
@@ -422,6 +435,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
         if (null != serviceConnection) {
             unbindService(serviceConnection!!)
         }
+        LogUtils.print("程序退出！")
+        restartApplication(5000)
     }
 
     var data = ""
@@ -472,14 +487,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                         LogUtils.print(pushBean.data.content)
                         tv_notice.text = BaseConfig.DEFUT_TEXT
                         sendNotice(type, pushBean.data.version)
-                        SharedPreferencesUtils.putString(
+                        SharePreferencesUtils.saveString(
                             this,
                             BaseConfig.NOTICE,
                             ""
                         )
                     } else {
                         if (!pushBean.data.content.isNullOrEmpty()) {
-                            SharedPreferencesUtils.putString(
+                            SharePreferencesUtils.saveString(
                                 this,
                                 BaseConfig.NOTICE,
                                 pushBean.data.content
@@ -496,11 +511,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                     val pushBean = gson.fromJson(data, UpDataEvent::class.java)
                     if (pushBean.data.version.contains("-1")) {
                         SharePreferencesUtils.saveString(this, BaseConfig.VIDEO, "")
-                        initVideoView("")
+                        restartApplication(5000)
                     } else {
                         mViewModel.downloadVideo(pushBean.data.url, {
                             LogUtils.print("下载成功")
                             SharePreferencesUtils.saveString(this, BaseConfig.VIDEO, it)
+                            SharePreferencesUtils.saveString(this, BaseConfig.PIC, "")
                             initVideoView(it)
                             sendNotice(type, pushBean.data.version)
                         }, {
@@ -514,15 +530,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                 }
                 //图片下发
                 "notice_picture" -> {
-                    LogUtils.print("下发视频通知")
+                    LogUtils.print("下发图片通知")
                     val pushBean = gson.fromJson(data, UpDataEvent::class.java)
                     if (pushBean.data.version.contains("-1")) {
+                        sendNotice(type, pushBean.data.version)
                         SharePreferencesUtils.saveString(this, BaseConfig.PIC, "")
-                        initVideoView("")
+                        restartApplication(5000)
                     } else {
                         mViewModel.downloadPic(pushBean.data.url, {
                             LogUtils.print("下载成功")
                             SharePreferencesUtils.saveString(this, BaseConfig.PIC, it)
+                            SharePreferencesUtils.saveString(this, BaseConfig.VIDEO, "")
                             showPic(it)
                             sendNotice(type, pushBean.data.version)
                         }, {
