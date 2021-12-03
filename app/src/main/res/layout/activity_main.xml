@@ -29,28 +29,67 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_weather_temp"
+        <RelativeLayout
+            android:id="@+id/lay_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="77dp"
-            android:layout_marginTop="30dp"
-            android:text="@{model.temperature}"
-            android:textColor="@color/white"
-            android:textSize="60dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_notice" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_notice">
+
+            <TextClock
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:format12Hour="hh:mm"
+                android:format24Hour="HH:mm"
+                android:textColor="@color/white"
+                android:textSize="60dp" />
+
+            <TextClock
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_time"
+                android:format12Hour="MM月dd日 EEEE"
+                android:format24Hour="MM月dd日 EEEE"
+                android:textColor="@color/white"
+                android:textSize="30dp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_time" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tv_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="77dp"
+            android:layout_marginTop="30dp"
             android:text="@{model.weather}"
             android:textColor="@color/white"
-            android:textSize="30dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_weather_temp"
-            app:layout_constraintLeft_toRightOf="@+id/tv_weather_temp" />
+            android:textSize="60dp"
+            app:layout_constraintLeft_toRightOf="@+id/lay_time"
+            app:layout_constraintTop_toBottomOf="@+id/tv_notice" />
+
+        <ImageView
+            android:id="@+id/imv_weather"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:src="@{model.icon}"
+            app:layout_constraintLeft_toRightOf="@+id/tv_weather"
+            app:layout_constraintTop_toTopOf="@+id/tv_weather" />
+
+        <TextView
+            android:id="@+id/tv_weather_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@{model.temperature}"
+            android:textColor="@color/white"
+            android:textSize="50dp"
+            app:layout_constraintLeft_toRightOf="@+id/imv_weather"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_weather" />
 
         <RelativeLayout
             android:id="@+id/rely"
@@ -68,9 +107,9 @@
 
             <ImageView
                 android:id="@+id/image"
-                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:scaleType="fitXY"
                 android:visibility="gone" />
 
         </RelativeLayout>

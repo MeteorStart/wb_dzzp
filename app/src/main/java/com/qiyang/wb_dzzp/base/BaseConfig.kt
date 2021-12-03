@@ -78,4 +78,15 @@ object BaseConfig {
 
     const val VIDEO = "VIDEO"
 
+    //晴
+    const val WEATHER_TYPE_QING = 1
+    //阴
+    const val WEATHER_TYPE_YIN = 2
+    //多云
+    const val WEATHER_TYPE_DUO_YUN = 3
+    //雨
+    const val WEATHER_TYPE_YU = 4
+    //雪
+    const val WEATHER_TYPE_XUE = 5
+
 }

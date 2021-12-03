@@ -1,6 +1,7 @@
 package com.qiyang.wb_dzzp.viewmodel
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,9 +9,15 @@ import com.jtkj.dzzp_52_screen.utils.AppPrefsUtils
 import com.kk.android.comvvmhelper.extension.repeatLaunch
 import com.kk.android.comvvmhelper.extension.safeLaunch
 import com.qiyang.wb_dzzp.MyApplication
+import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.base.BaseConfig.DEFUT_GET_STATION_TIME
 import com.qiyang.wb_dzzp.base.BaseConfig.DEFUT_SEND_STATION_TIME
+import com.qiyang.wb_dzzp.base.BaseConfig.WEATHER_TYPE_DUO_YUN
+import com.qiyang.wb_dzzp.base.BaseConfig.WEATHER_TYPE_QING
+import com.qiyang.wb_dzzp.base.BaseConfig.WEATHER_TYPE_XUE
+import com.qiyang.wb_dzzp.base.BaseConfig.WEATHER_TYPE_YIN
+import com.qiyang.wb_dzzp.base.BaseConfig.WEATHER_TYPE_YU
 import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.network.http.SUCESS
 import com.qiyang.wb_dzzp.network.repository.BusRepository
@@ -37,6 +44,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
 
     val temperature = MutableLiveData<String>()
     val weather = MutableLiveData<String>()
+    val icon = MutableLiveData<Drawable>()
 
     val tempValue = MutableLiveData<String>()
     val humiValue = MutableLiveData<String>()
@@ -126,7 +134,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
                 isStandTime(MyApplication.deviceConfigBean.set.operationTime)
             ) {
                 station(body, success, fail)
-            }else{
+            } else {
                 fail("不在运营时间")
             }
         }, Int.MAX_VALUE, 0)
@@ -247,7 +255,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
      * @author: Meteor
      * @email: lx802315@163.com
      */
-    fun getWeather(sim: String, fail: (String) -> Unit) {
+    fun getWeather(sim: String, success: (Int) -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {
             block = {
                 val body = GetWeatherBody(BaseConfig.CITY_ID, BaseConfig.CITY_ID, sim)
@@ -255,6 +263,7 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
                 if (result.code == SUCESS) {
                     temperature.value = result.data.temperature + "°"
                     weather.value = result.data.weather
+                    success(getWeatherType(result.data.weather))
                 } else {
                     fail(result.msg)
                 }
@@ -263,6 +272,22 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
                 fail(it.localizedMessage)
             }
         }
+    }
+
+    fun getWeatherType(weatherStr: String): Int {
+        if (weatherStr.contains("晴")) {
+            return WEATHER_TYPE_QING
+        }
+        if (weatherStr.contains("雨")) {
+            return WEATHER_TYPE_YU
+        }
+        if (weatherStr.contains("云")) {
+            return WEATHER_TYPE_DUO_YUN
+        }
+        if (weatherStr.contains("雪")) {
+            return WEATHER_TYPE_XUE
+        }
+        return WEATHER_TYPE_YIN
     }
 
     /**
@@ -354,7 +379,6 @@ class MainModel constructor(private val busRepository: BusRepository) : ViewMode
             }
         }
     }
-
 
     fun upLoadLogFile(file: File, success: (String) -> Unit, fail: (String) -> Unit) {
         viewModelScope.safeLaunch {

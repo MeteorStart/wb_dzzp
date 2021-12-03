@@ -1,5 +1,6 @@
 package com.qiyang.wb_dzzp.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.hardware.Sensor
@@ -92,6 +93,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
         super.onCreate(savedInstanceState)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun initActivity(savedInstanceState: Bundle?) {
         NavigationBarStatusBar(this, true)
         mBinding.model = mViewModel
@@ -138,7 +140,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
         val pic = SharePreferencesUtils.getString(this, BaseConfig.PIC, "")
         if (pic.isNotEmpty()) {
             showPic(pic)
-        }else{
+        } else {
             //判断是否有视频内容
             val video = SharePreferencesUtils.getString(this, BaseConfig.VIDEO, "")
             if (video.isNotEmpty()) {
@@ -270,9 +272,27 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
      * @email: lx802315@163.com
      */
     private fun getWeather(sim: String) {
-        mViewModel.getWeather(sim) {
+        mViewModel.getWeather(sim, {
+            when (it) {
+                BaseConfig.WEATHER_TYPE_YIN -> {
+                    mViewModel.icon.value = resources.getDrawable(R.mipmap.icon_yin)
+                }
+                BaseConfig.WEATHER_TYPE_QING -> {
+                    mViewModel.icon.value = resources.getDrawable(R.mipmap.icon_qing)
+                }
+                BaseConfig.WEATHER_TYPE_DUO_YUN -> {
+                    mViewModel.icon.value = resources.getDrawable(R.mipmap.icon_duoyun)
+                }
+                BaseConfig.WEATHER_TYPE_YU -> {
+                    mViewModel.icon.value = resources.getDrawable(R.mipmap.icon_yu)
+                }
+                BaseConfig.WEATHER_TYPE_XUE -> {
+                    mViewModel.icon.value = resources.getDrawable(R.mipmap.icon_xue)
+                }
+            }
+        }, {
             toast(it)
-        }
+        })
     }
 
     /**
