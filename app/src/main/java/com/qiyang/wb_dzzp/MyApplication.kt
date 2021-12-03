@@ -57,7 +57,7 @@ class MyApplication : Application() {
          * @author: Meteor
          */
         fun isApkInDebug(context: Context): Boolean {
-            return true
+            return false
         }
 
     }

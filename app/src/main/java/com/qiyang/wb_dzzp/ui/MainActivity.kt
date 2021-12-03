@@ -511,7 +511,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                     val pushBean = gson.fromJson(data, UpDataEvent::class.java)
                     if (pushBean.data.version.contains("-1")) {
                         SharePreferencesUtils.saveString(this, BaseConfig.VIDEO, "")
-                        restartApplication(5000)
+//                        restartApplication(5000)
                     } else {
                         mViewModel.downloadVideo(pushBean.data.url, {
                             LogUtils.print("下载成功")
@@ -535,7 +535,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IGetMessageCallBack, I
                     if (pushBean.data.version.contains("-1")) {
                         sendNotice(type, pushBean.data.version)
                         SharePreferencesUtils.saveString(this, BaseConfig.PIC, "")
-                        restartApplication(5000)
+//                        restartApplication(5000)
                     } else {
                         mViewModel.downloadPic(pushBean.data.url, {
                             LogUtils.print("下载成功")
