@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.qiyang.wb_dzzp.viewmodel.MainModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/icon_bg"
+        tools:context=".ui.MainActivity2">
+
+        <TextView
+            android:id="@+id/tv_notice"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_bottom"
+            android:gravity="center"
+            android:text="公告：因道路施工123路临时改线！"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/lay_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="77dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_notice">
+
+            <TextClock
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:format12Hour="hh:mm"
+                android:format24Hour="HH:mm"
+                android:textColor="@color/white"
+                android:textSize="60dp" />
+
+            <TextClock
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_time"
+                android:format12Hour="MM月dd日 EEEE"
+                android:format24Hour="MM月dd日 EEEE"
+                android:textColor="@color/white"
+                android:textSize="30dp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_time" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="77dp"
+            android:layout_marginTop="30dp"
+            android:text="@{model.weather}"
+            android:textColor="@color/white"
+            android:textSize="60dp"
+            app:layout_constraintLeft_toRightOf="@+id/lay_time"
+            app:layout_constraintTop_toBottomOf="@+id/tv_notice" />
+
+        <ImageView
+            android:id="@+id/imv_weather"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:src="@{model.icon}"
+            app:layout_constraintLeft_toRightOf="@+id/tv_weather"
+            app:layout_constraintTop_toTopOf="@+id/tv_weather" />
+
+        <TextView
+            android:id="@+id/tv_weather_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@{model.temperature}"
+            android:textColor="@color/white"
+            android:textSize="50dp"
+            app:layout_constraintLeft_toRightOf="@+id/imv_weather"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_weather" />
+
+        <RelativeLayout
+            android:id="@+id/rely"
+            android:layout_width="1060dp"
+            android:layout_height="728dp"
+            android:layout_marginLeft="77dp"
+            android:layout_marginTop="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_weather">
+
+            <com.qiyang.wb_dzzp.view.CustomerVideoView
+                android:id="@+id/video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_station_name"
+            android:layout_width="660dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bg_station_name"
+            android:gravity="center"
+            android:text="当前站点：江晖路滨康小区北"
+            android:textColor="@color/white"
+            android:textSize="40dp"
+            app:layout_constraintLeft_toRightOf="@+id/rely"
+            app:layout_constraintTop_toBottomOf="@+id/tv_notice" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recy_main"
+            android:layout_width="660dp"
+            android:layout_height="728dp"
+            android:layout_marginLeft="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/rely"
+            app:layout_constraintLeft_toRightOf="@+id/rely"
+            app:layout_constraintTop_toTopOf="@+id/rely"
+            tools:listitem="@layout/item_bus" />
+
+        <RelativeLayout
+            android:id="@+id/rely_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:background="@drawable/bg_bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <TextView
+                android:id="@+id/tv_sim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                android:text="3301000001"
+                android:textColor="@color/white"
+                android:textSize="24dp" />
+
+            <TextView
+                android:id="@+id/tv_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:text="v1.0.0"
+                android:textColor="@color/white"
+                android:textSize="24dp" />
+
+            <TextView
+                android:id="@+id/tv_welcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                android:layout_toLeftOf="@+id/tv_version"
+                android:text="欢迎使用智能公交"
+                android:textColor="@color/white"
+                android:textSize="26dp" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/purple_700"
+            android:gravity="center"
+            android:padding="60dp"
+            android:textColor="@color/white"
+            android:textSize="120dp"
+            android:visibility="gone"
+            tools:text="错误信息" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
