@@ -136,7 +136,7 @@ class StartActivity : BaseActivity<ActivityStartBinding>() , EasyPermissions.Per
      */
     private fun jumpToMain(errorCode: Int) {
         LogUtils.print("当前布局: mainActivity")
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, MainActivity2::class.java)
         intent.putExtra("errorCode", errorCode)
         startActivity(intent)
 
