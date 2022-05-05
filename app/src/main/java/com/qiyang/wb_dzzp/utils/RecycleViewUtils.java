@@ -67,10 +67,11 @@ public class RecycleViewUtils {
      * @param context
      * @param recyclerView
      */
-    public static void getHorizontalLayoutManager(Context context, RecyclerView recyclerView) {
+    public static RecyclerView.LayoutManager getHorizontalLayoutManager(Context context, RecyclerView recyclerView) {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
+        return layoutManager;
     }
 
 }

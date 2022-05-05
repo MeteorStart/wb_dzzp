@@ -57,71 +57,78 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RelativeLayout
-                    android:id="@+id/lay_time"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_green"
+                    android:padding="15dp">
 
-                    <TextClock
-                        android:id="@+id/tv_time"
+                    <RelativeLayout
+                        android:id="@+id/lay_time"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:format12Hour="hh:mm"
-                        android:format24Hour="HH:mm"
-                        android:textColor="@color/white"
-                        android:textSize="60dp"
-                        tools:text="22:22" />
+                        android:layout_height="wrap_content">
 
-                    <TextClock
-                        android:id="@+id/tv_date"
+                        <TextClock
+                            android:id="@+id/tv_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:format12Hour="hh:mm"
+                            android:format24Hour="HH:mm"
+                            android:textColor="@color/white"
+                            android:textSize="60dp"
+                            tools:text="22:22" />
+
+                        <TextClock
+                            android:id="@+id/tv_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_time"
+                            android:format12Hour="MM月dd日 EEEE"
+                            android:format24Hour="MM月dd日 EEEE"
+                            android:textColor="@color/white"
+                            android:textSize="30dp"
+                            tools:text="8月12日 2022" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_time"
-                        android:format12Hour="MM月dd日 EEEE"
-                        android:format24Hour="MM月dd日 EEEE"
-                        android:textColor="@color/white"
-                        android:textSize="30dp"
-                        tools:text="8月12日 2022" />
-                </RelativeLayout>
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical">
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/tv_weather"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="77dp"
+                            android:layout_marginTop="30dp"
+                            android:text="@{model.weather}"
+                            android:textColor="@color/white"
+                            android:textSize="30dp"
+                            tools:text="晴" />
 
-                    <TextView
-                        android:id="@+id/tv_weather"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="77dp"
-                        android:layout_marginTop="30dp"
-                        android:text="@{model.weather}"
-                        android:textColor="@color/white"
-                        android:textSize="30dp"
-                        tools:text="晴" />
+                        <ImageView
+                            android:id="@+id/imv_weather"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@+id/tv_weather"
+                            android:src="@{model.icon}" />
 
-                    <ImageView
-                        android:id="@+id/imv_weather"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@+id/tv_weather"
-                        android:src="@{model.icon}" />
+                        <TextView
+                            android:id="@+id/tv_weather_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/tv_weather"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@+id/imv_weather"
+                            android:text="@{model.temperature}"
+                            android:textColor="@color/white"
+                            android:textSize="30dp"
+                            tools:text="32°" />
 
-                    <TextView
-                        android:id="@+id/tv_weather_temp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/tv_weather"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@+id/imv_weather"
-                        android:text="@{model.temperature}"
-                        android:textColor="@color/white"
-                        android:textSize="30dp"
-                        tools:text="32°" />
-
-                </RelativeLayout>
+                    </RelativeLayout>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_station_name"
@@ -129,7 +136,6 @@
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@+id/tv_weather_temp"
                     android:layout_weight="1"
-                    android:layout_marginLeft="40dp"
                     android:background="@drawable/bg_station_name"
                     android:gravity="center"
                     android:text="当前站点：江晖路滨康小区北"
@@ -143,12 +149,12 @@
                 android:id="@+id/recy_main"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:layout_marginTop="40dp"
                 app:layout_constraintBottom_toBottomOf="@+id/rely"
                 app:layout_constraintLeft_toRightOf="@+id/rely"
                 app:layout_constraintTop_toTopOf="@+id/rely"
-                tools:listitem="@layout/item_bus" />
+                tools:listitem="@layout/item_bus2" />
 
             <RelativeLayout
                 android:id="@+id/rely_bottom"

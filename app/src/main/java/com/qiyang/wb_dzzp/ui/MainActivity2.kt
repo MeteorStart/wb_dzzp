@@ -27,13 +27,13 @@ import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.*
 import com.qiyang.wb_dzzp.utils.FileUtils
 import com.qiyang.wb_dzzp.viewmodel.MainModel
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.toast
 import java.io.File
 
-class MainActivity2 : BaseActivity<ActivityMain2Binding>() , IGetMessageCallBack, IOnLineCallBack {
+class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack, IOnLineCallBack {
     var dataList = ArrayList<Route>()
-    val mMainAdapter = MainAdapter(R.layout.item_bus, dataList)
+    val mMainAdapter = Main2Adapter(R.layout.item_bus2, dataList)
 
     //错误编号
     private var errorCode: Int = 0

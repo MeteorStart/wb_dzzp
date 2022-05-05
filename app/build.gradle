@@ -79,4 +79,7 @@ dependencies {
 
     //权限相关
     implementation 'pub.devrel:easypermissions:2.0.1'
+
+    //时间轴
+    implementation project(':timelineview')
 }
