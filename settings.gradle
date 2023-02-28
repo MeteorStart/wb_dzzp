@@ -1,3 +1,4 @@
 include ':app'
 rootProject.name = "wb_dzzp"
 include ':timelineview'
+include ':SerialPortLibrary'

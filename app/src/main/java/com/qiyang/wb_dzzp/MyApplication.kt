@@ -11,7 +11,6 @@ import com.qiyang.wb_dzzp.base.BaseConfig
 import com.qiyang.wb_dzzp.base.CrashHandlerUtil
 import com.qiyang.wb_dzzp.data.DeviceConfigBean
 import com.qiyang.wb_dzzp.utils.FileUtils
-import com.qiyang.wb_dzzp.utils.FileUtils.Companion.getSim
 import com.qiyang.wb_dzzp.utils.LogUtils
 import com.qiyang.wb_dzzp.utils.UpDateUtils
 import com.qiyang.wb_dzzp.utils.WriteHandler
