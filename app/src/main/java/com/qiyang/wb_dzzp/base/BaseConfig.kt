@@ -26,13 +26,13 @@ object BaseConfig {
     val OLD_UP_TRAFFIC = "oldUpTraffic"
 
     //默认滚动时间
-    const val DEFUT_SCOLL_TIME = 30000L
+    const val DEFUT_SCOLL_TIME = 1000L * 30
 
     //默认获取线路信息时间
-    const val DEFUT_GET_STATION_TIME = 10000L
+    const val DEFUT_GET_STATION_TIME = 1000L * 10
 
     //默认上传硬件时间
-    const val DEFUT_SEND_STATION_TIME = 1000L * 60 * 5
+    const val DEFUT_SEND_STATION_TIME = 1000L * 40
 
     //数据正常跳转
     const val NORMAL_STATE = 1
@@ -88,5 +88,9 @@ object BaseConfig {
     const val WEATHER_TYPE_YU = 4
     //雪
     const val WEATHER_TYPE_XUE = 5
+
+    const val COM_TTYS1 = "/dev/ttyS1"
+
+    const val BAUDRATE_9600 = 9600
 
 }

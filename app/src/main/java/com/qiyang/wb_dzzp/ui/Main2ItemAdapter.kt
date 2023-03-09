@@ -2,6 +2,7 @@ package com.qiyang.wb_dzzp.ui
 
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.qiyang.wb_dzzp.R
 
 /**
  * @author: X_Meteor
@@ -15,6 +16,6 @@ class Main2ItemAdapter(layoutResId: Int, data: MutableList<String>?) :
     BaseQuickAdapter<String, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder?, item: String?) {
-
+        helper?.setText(R.id.tv_station_name, item)
     }
 }

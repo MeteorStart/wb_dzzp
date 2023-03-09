@@ -10,9 +10,9 @@ import com.kongqw.serialportlibrary.DataUtils
  * @Description:专门处理串口返回数据的类
  */
 class ManagePortResult : SerialPortResult {
+
     override fun result(bytes: ByteArray) {
         Log.e("aaaa", "返回信息：${DataUtils.ByteArrToHex(bytes)}")
-
     }
 
 }

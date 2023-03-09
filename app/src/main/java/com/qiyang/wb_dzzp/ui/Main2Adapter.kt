@@ -98,17 +98,17 @@ class Main2Adapter(layoutResId: Int, data: MutableList<Route>?) :
                     }
                 }
 
-                val stationRecy = helper.getView<RecyclerView>(R.id.recy_station)
+//                val stationRecy = helper.getView<RecyclerView>(R.id.recy_station)
 
-                stationRecy.layoutManager =
-                    GridLayoutManager(
-                        mContext,
-                        11,
-                        GridLayoutManager.VERTICAL,
-                        false
-                    )
-
-                stationRecy.adapter = adapter
+//                stationRecy.layoutManager =
+//                    GridLayoutManager(
+//                        mContext,
+//                        11,
+//                        GridLayoutManager.VERTICAL,
+//                        false
+//                    )
+//
+//                stationRecy.adapter = adapter
 
 
             }

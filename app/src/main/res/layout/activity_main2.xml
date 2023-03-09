@@ -60,7 +60,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_green"
+                    android:background="#ff5fcd98"
                     android:padding="15dp">
 
                     <RelativeLayout
@@ -136,7 +136,7 @@
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@+id/tv_weather_temp"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_station_name"
+                    android:background="#ff419aff"
                     android:gravity="center"
                     android:text="当前站点：江晖路滨康小区北"
                     android:textColor="@color/white"
@@ -145,16 +145,27 @@
 
             </LinearLayout>
 
+            <!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/recy_main"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_weight="1"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/rely"-->
+<!--                app:layout_constraintLeft_toRightOf="@+id/rely"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/rely"-->
+<!--                tools:listitem="@layout/item_bus2" />-->
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recy_main"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="10dp"
+                android:layout_margin="15dp"
                 android:layout_weight="1"
                 app:layout_constraintBottom_toBottomOf="@+id/rely"
                 app:layout_constraintLeft_toRightOf="@+id/rely"
                 app:layout_constraintTop_toTopOf="@+id/rely"
-                tools:listitem="@layout/item_bus2" />
+                tools:listitem="@layout/item_bus3" />
 
             <RelativeLayout
                 android:id="@+id/rely_bottom"

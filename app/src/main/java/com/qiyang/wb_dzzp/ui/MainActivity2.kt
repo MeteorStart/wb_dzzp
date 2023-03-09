@@ -12,6 +12,7 @@ import android.os.*
 import android.view.View
 import android.widget.MediaController
 import com.google.gson.Gson
+import com.kongqw.serialportlibrary.DataUtils
 import com.qiyang.wb_dzzp.MyApplication
 import com.qiyang.wb_dzzp.R
 import com.qiyang.wb_dzzp.allcontrol.ControlDevicesProtocol
@@ -19,6 +20,10 @@ import com.qiyang.wb_dzzp.allcontrol.DoorControl
 import com.qiyang.wb_dzzp.allcontrol.WaterSensorControl
 import com.qiyang.wb_dzzp.base.BaseActivity
 import com.qiyang.wb_dzzp.base.BaseConfig
+import com.qiyang.wb_dzzp.base.BaseConfig.BAUDRATE_9600
+import com.qiyang.wb_dzzp.base.BaseConfig.COM_TTYS1
+import com.qiyang.wb_dzzp.comPort.SerialPortUtils
+import com.qiyang.wb_dzzp.comPort.interfaces.SerialPortResult
 import com.qiyang.wb_dzzp.data.*
 import com.qiyang.wb_dzzp.databinding.ActivityMain2Binding
 import com.qiyang.wb_dzzp.mqtt.*
@@ -28,12 +33,14 @@ import com.qiyang.wb_dzzp.utils.*
 import com.qiyang.wb_dzzp.utils.FileUtils
 import com.qiyang.wb_dzzp.viewmodel.MainModel
 import kotlinx.android.synthetic.main.activity_main2.*
+import okio.ByteString.Companion.toByteString
 import org.jetbrains.anko.toast
 import java.io.File
 
-class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack, IOnLineCallBack {
+class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack, IOnLineCallBack,
+    SerialPortResult {
     var dataList = ArrayList<Route>()
-    val mMainAdapter = Main2Adapter(R.layout.item_bus2, dataList)
+    val mMainAdapter = Main2Adapter(R.layout.item_bus3, dataList)
 
     //错误编号
     private var errorCode: Int = 0
@@ -41,6 +48,9 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
     private val mViewModel: MainModel by lazy {
         MainModel(BusRepository.instance)
     }
+
+    //创建串口发送类
+    private val serialPortUtils by lazy { SerialPortUtils() }
 
     private var serviceConnection: MyServiceConnection? = null
 
@@ -73,7 +83,6 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
                 TEMPERATURE_SHOW -> {
                     mViewModel.tempValue.value = tempValue.toString()
 //                    LogUtils.print("温度：$tempValue°")
-
                 }
 
                 HUMITURE_SHOW -> {
@@ -147,12 +156,14 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
                 initVideoView("")
             }
         }
+//
+//        initDoorIControl()
+//
+//        initWaterControl()
+//
+//        initHumidity()
 
-        initDoorIControl()
-
-        initWaterControl()
-
-        initHumidity()
+        serialPortUtils.openSerialPort(COM_TTYS1, BAUDRATE_9600, this)
     }
 
     /**
@@ -627,8 +638,8 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
 
         val bitmap = BitmapUtils.createBitmap(
             recy_main.rootView,
-            BaseConfig.MAX_WIDTH,
-            BaseConfig.MAX_HEIGHT
+            BaseConfig.MAX_HEIGHT,
+            BaseConfig.MAX_WIDTH
         )
 
         if (bitmap != null) {
@@ -735,5 +746,27 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
         }, {
             LogUtils.print("回传版本失败：${type + version} + $it")
         })
+    }
+
+    override fun result(bytes: ByteArray) {
+
+        LogUtils.print("串口数据：${bytes.toList()}")
+
+        var byte = DataUtils.ByteArrToHexArray(bytes)
+        LogUtils.print("16进制串口数据：$byte")
+
+        LogUtils.print("湿度：${bytes[4]}")
+        LogUtils.print("温度：${bytes[5]}")
+
+        try {
+            recy_main.post {
+                mViewModel.humiValue.value = bytes[4].toString()
+                mViewModel.tempValue.value = bytes[5].toString()
+            }
+        }catch (e:java.lang.Exception){
+            LogUtils.print("串口异常")
+        }
+
+
     }
 }
