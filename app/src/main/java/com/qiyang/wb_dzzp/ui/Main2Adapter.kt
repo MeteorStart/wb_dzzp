@@ -1,8 +1,6 @@
 package com.qiyang.wb_dzzp.ui
 
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.qiyang.wb_dzzp.R
@@ -13,7 +11,6 @@ import com.qiyang.wb_dzzp.base.BaseConfig.STATES_NEAR
 import com.qiyang.wb_dzzp.base.BaseConfig.STATES_NOT_RUN
 import com.qiyang.wb_dzzp.base.BaseConfig.STATES_WAIT_DISPATCH
 import com.qiyang.wb_dzzp.data.Route
-import com.qiyang.wb_dzzp.utils.RecycleViewUtils
 
 /**
  * @author: X_Meteor
@@ -27,13 +24,7 @@ class Main2Adapter(layoutResId: Int, data: MutableList<Route>?) :
     BaseQuickAdapter<Route, BaseViewHolder>(layoutResId, data) {
 
     val list = ArrayList<String>()
-    val adapter = Main2ItemAdapter(R.layout.item_bus2_item, list)
 
-    init {
-        for (i in 0..10) {
-            list.add(i.toString())
-        }
-    }
 
     /**
      * @name: 线路详情
@@ -97,18 +88,6 @@ class Main2Adapter(layoutResId: Int, data: MutableList<Route>?) :
                         helper.setText(R.id.tv_content, R.string.error)
                     }
                 }
-
-//                val stationRecy = helper.getView<RecyclerView>(R.id.recy_station)
-
-//                stationRecy.layoutManager =
-//                    GridLayoutManager(
-//                        mContext,
-//                        11,
-//                        GridLayoutManager.VERTICAL,
-//                        false
-//                    )
-//
-//                stationRecy.adapter = adapter
 
 
             }

@@ -165,7 +165,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/rely"
                 app:layout_constraintLeft_toRightOf="@+id/rely"
                 app:layout_constraintTop_toTopOf="@+id/rely"
-                tools:listitem="@layout/item_bus3" />
+                tools:listitem="@layout/item_bus2" />
 
             <RelativeLayout
                 android:id="@+id/rely_bottom"

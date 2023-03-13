@@ -25,21 +25,21 @@ import com.qiyang.wb_dzzp.base.BaseConfig.COM_TTYS1
 import com.qiyang.wb_dzzp.comPort.SerialPortUtils
 import com.qiyang.wb_dzzp.comPort.interfaces.SerialPortResult
 import com.qiyang.wb_dzzp.data.*
-import com.qiyang.wb_dzzp.databinding.ActivityMain2Binding
+import com.qiyang.wb_dzzp.databinding.ActivityMain3Binding
 import com.qiyang.wb_dzzp.mqtt.*
 import com.qiyang.wb_dzzp.mqtt.EnventBean.UpDataEvent
 import com.qiyang.wb_dzzp.network.repository.BusRepository
 import com.qiyang.wb_dzzp.utils.*
 import com.qiyang.wb_dzzp.utils.FileUtils
 import com.qiyang.wb_dzzp.viewmodel.MainModel
-import kotlinx.android.synthetic.main.activity_main2.*
+import kotlinx.android.synthetic.main.activity_main3.*
 import org.jetbrains.anko.toast
 import java.io.File
 
-class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack, IOnLineCallBack,
+class MainActivity3 : BaseActivity<ActivityMain3Binding>(), IGetMessageCallBack, IOnLineCallBack,
     SerialPortResult {
     var dataList = ArrayList<Route>()
-    val mMainAdapter = Main2Adapter(R.layout.item_bus2, dataList)
+    val mMainAdapter = Main3Adapter(R.layout.item_bus3, dataList)
 
     //错误编号
     private var errorCode: Int = 0
@@ -92,7 +92,7 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.activity_main2
+    override fun getLayoutId(): Int = R.layout.activity_main3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         errorCode = intent.getIntExtra("errorCode", 0)
@@ -315,8 +315,8 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
                 mViewModel.isStandTime(MyApplication.deviceConfigBean.set.operationTime)
             ) {
                 tv_error.visibility = View.GONE
-                tv_station_name.text = "当前站点：" + it.station.stationName
-                mMainAdapter.setNewData(it.routes)
+                tv_station_name.text = it.station.stationName
+                mMainAdapter.setNewData(defultStation(it.routes))
             } else {
                 showErrorMsg("不在运营时间")
             }
@@ -327,6 +327,61 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
                 toast(it)
             }
         })
+    }
+
+    fun defultStation(list: List<Route>): List<Route> {
+        val newList = ArrayList<Route>()
+        list.forEach {
+            when (it.routeName) {
+                "66路" -> {
+                    val stationList = ArrayList<Station>()
+                    stationList.add(Station(ArrayList<Buse>(), false, "南浦大桥（泸军营路）", "1"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "东湖公园", "2"))
+                    stationList.add(Station(arrayListOf<Buse>(Buse("1")), false, "百花府园", "3"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "清江医院", "4"))
+                    stationList.add(Station(ArrayList<Buse>(), true, "蓬莱公园", "5"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "共和名城", "6"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "樟树信用社", "7"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "药都会堂", "8"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "樟树人民医院", "9"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "福成公寓", "10"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "曼哈顿", "11"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "酒都广场", "12"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "新田国际", "13"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "丰镇新村", "14"))
+                    it.stations = stationList
+                    newList.add(it)
+                }
+                "66区间" -> {
+                    val stationList = ArrayList<Station>()
+                    stationList.add(Station(ArrayList<Buse>(), false, "南浦大桥（泸军营路）", "1"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "东湖公园", "2"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "百花府园", "3"))
+                    stationList.add(Station(arrayListOf<Buse>(Buse("1")), false, "清江医院", "4"))
+                    stationList.add(Station(ArrayList<Buse>(), true, "蓬莱公园", "5"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "北宝兴路民晏路", "6"))
+                    it.stations = stationList
+                    newList.add(it)
+                }
+                "306（夜宵线）" -> {
+                    val stationList = ArrayList<Station>()
+                    stationList.add(Station(ArrayList<Buse>(), false, "南浦大桥（泸军营路）", "1"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "东湖公园", "2"))
+                    stationList.add(Station(arrayListOf<Buse>(Buse("1")), false, "百花府园", "3"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "清江医院", "4"))
+                    stationList.add(Station(ArrayList<Buse>(), true, "蓬莱公园", "5"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "共和名城", "6"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "樟树信用社", "7"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "药都会堂", "8"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "樟树人民医院", "9"))
+                    stationList.add(Station(arrayListOf<Buse>(Buse("1")), false, "福成公寓", "10"))
+                    stationList.add(Station(ArrayList<Buse>(), false, "上海火车站（北广场）", "11"))
+                    it.stations = stationList
+                    newList.add(it)
+                }
+            }
+        }
+        return newList
     }
 
     /**
@@ -340,7 +395,7 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
             tv_error.visibility = View.GONE
             if (it.devCode.isNotEmpty()) {
                 FileUtils.saveSim(it.devCode)
-                tv_station_name.text = "当前站点：" + it.stationName
+                tv_station_name.text = it.stationName
                 getStation(it.devCode)
                 tv_sim.text = it.devCode
                 mViewModel.repeatSend(it.devCode, {
@@ -357,7 +412,6 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
             toast(it)
         })
     }
-
 
     /**
      * @description: 获取配置信息
@@ -437,15 +491,6 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
             true
         })
     }
-
-//    private fun restartVideo(url: String) {
-//        try {
-//            val proc = Runtime.getRuntime().exec(arrayOf("su", "-c", "reboot ")) //关机
-//            proc.waitFor()
-//        } catch (ex: Exception) {
-//            ex.printStackTrace()
-//        }
-//    }
 
     fun notifyVideo() {
         LogUtils.printError("暂停视频播放")
@@ -762,7 +807,7 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>(), IGetMessageCallBack,
                 mViewModel.humiValue.value = bytes[4].toString()
                 mViewModel.tempValue.value = bytes[5].toString()
             }
-        }catch (e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             LogUtils.print("串口异常")
         }
 

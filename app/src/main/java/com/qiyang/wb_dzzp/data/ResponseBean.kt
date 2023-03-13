@@ -186,7 +186,7 @@ data class Route(
     val runFlag: Boolean,
     val startStationName: String,
     val startTime: String,
-    val stations: List<Station>
+    var stations: ArrayList<Station>
 )
 /**
  * @name: 线路下站点信息（已排序）
@@ -199,7 +199,7 @@ data class Route(
  * @email: lx802315@163.com
  */
 data class Station(
-    val buses: List<Buse>,
+    val buses: ArrayList<Buse>,
     val devStationFlag: Boolean,
     val stationName: String,
     val stationNum: String

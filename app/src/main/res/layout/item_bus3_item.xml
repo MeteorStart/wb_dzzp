@@ -2,50 +2,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="215dp"
+    android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imv_bus"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@mipmap/icon_bus"
+        android:visibility="invisible" />
 
     <com.github.vipulasri.timelineview.TimelineView
         android:id="@+id/timeline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="0dp"
         app:endLineColor="@color/black"
         app:lineOrientation="horizontal"
-        app:linePadding="5dp"
+        app:linePadding="3dp"
         app:lineStyle="dash"
-        app:lineStyleDashGap="2dp"
-        app:lineStyleDashLength="3dp"
+        app:lineStyleDashGap="3dp"
+        app:lineStyleDashLength="6dp"
         app:lineWidth="3dp"
         app:marker="@drawable/icon_unarrive"
         app:markerInCenter="true"
-        app:markerSize="24dp"
+        app:markerSize="16dp"
         app:startLineColor="@color/black" />
-
 
     <LinearLayout
         android:id="@+id/lay_station_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="@dimen/dp_10"
         android:gravity="top|center_horizontal"
         android:orientation="horizontal">
 
-        <TextView
+        <com.qiyang.wb_dzzp.view.autoTextView.AutofitTextView
             android:id="@+id/tv_station_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="1"
             android:gravity="top|center_horizontal"
-            android:lineSpacingMultiplier="0.9"
+            android:padding="5dp"
             android:text="新民小学"
             android:textColor="@color/black"
-            android:textSize="40dp"
+            android:textSize="18dp"
             android:textStyle="bold" />
 
-        <TextView
+        <com.qiyang.wb_dzzp.view.autoTextView.AutofitTextView
             android:id="@+id/tv_station_name_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

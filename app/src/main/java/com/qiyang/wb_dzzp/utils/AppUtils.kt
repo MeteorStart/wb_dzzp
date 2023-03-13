@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.os.Build
+import android.util.TypedValue
 import java.security.MessageDigest
 
 /**
@@ -36,7 +38,7 @@ class AppUtils private constructor() {
             try {
                 val packageName = context.packageName
                 verCode = context.packageManager
-                        .getPackageInfo(packageName, 0).versionCode
+                    .getPackageInfo(packageName, 0).versionCode
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
@@ -65,7 +67,7 @@ class AppUtils private constructor() {
             try {
                 val packageName = context.packageName
                 verName = context.packageManager
-                        .getPackageInfo(packageName, 0).versionName
+                    .getPackageInfo(packageName, 0).versionName
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
@@ -76,17 +78,19 @@ class AppUtils private constructor() {
 
         @SuppressLint("PackageManagerGetSignatures")
                 /**
-         * 获取应用签名
-         *
-         * @param context 上下文
-         * @param pkgName 包名
-         * @return 返回应用的签名
-         */
+                 * 获取应用签名
+                 *
+                 * @param context 上下文
+                 * @param pkgName 包名
+                 * @return 返回应用的签名
+                 */
         fun getSign(context: Context, pkgName: String): String? {
             return try {
                 @SuppressLint("PackageManagerGetSignatures") val pis = context.packageManager
-                        .getPackageInfo(pkgName,
-                                PackageManager.GET_SIGNATURES)
+                    .getPackageInfo(
+                        pkgName,
+                        PackageManager.GET_SIGNATURES
+                    )
                 hexDigest(pis.signatures[0].toByteArray())
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
@@ -102,7 +106,24 @@ class AppUtils private constructor() {
          * @return 32位签名字符串
          */
         private fun hexDigest(paramArrayOfByte: ByteArray): String {
-            val hexDigits = charArrayOf(48.toChar(), 49.toChar(), 50.toChar(), 51.toChar(), 52.toChar(), 53.toChar(), 54.toChar(), 55.toChar(), 56.toChar(), 57.toChar(), 97.toChar(), 98.toChar(), 99.toChar(), 100.toChar(), 101.toChar(), 102.toChar())
+            val hexDigits = charArrayOf(
+                48.toChar(),
+                49.toChar(),
+                50.toChar(),
+                51.toChar(),
+                52.toChar(),
+                53.toChar(),
+                54.toChar(),
+                55.toChar(),
+                56.toChar(),
+                57.toChar(),
+                97.toChar(),
+                98.toChar(),
+                99.toChar(),
+                100.toChar(),
+                101.toChar(),
+                102.toChar()
+            )
             try {
                 val localMessageDigest = MessageDigest.getInstance("MD5")
                 localMessageDigest.update(paramArrayOfByte)
@@ -136,7 +157,8 @@ class AppUtils private constructor() {
          */
         fun getDeviceUsableMemory(context: Context): Int {
             val am = context.getSystemService(
-                    Context.ACTIVITY_SERVICE) as ActivityManager
+                Context.ACTIVITY_SERVICE
+            ) as ActivityManager
             val mi = ActivityManager.MemoryInfo()
             am.getMemoryInfo(mi)
             // 返回当前系统的可用内存
@@ -157,6 +179,16 @@ class AppUtils private constructor() {
          */
         val sdkVersion: Int
             get() = android.os.Build.VERSION.SDK_INT
+
+        fun dpToPx(dp: Float, context: Context): Int {
+            return dpToPx(dp, context.resources)
+        }
+
+        private fun dpToPx(dp: Float, resources: Resources): Int {
+            val px =
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
+            return px.toInt()
+        }
     }
 
 

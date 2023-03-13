@@ -3,13 +3,11 @@
     <string name="loading">加载中。。。</string>
 
     <string name="arrive">已到站</string>
-    <string name="near">即将到站</string>
+    <string name="near">即将\n到站</string>
     <string name="move">距离本站</string>
-    <string name="dispatch">首站发车</string>
-    <string name="wait_dispatch">等待发车</string>
-    <string name="not_run">非运营时间</string>
-
-    <string name="error">未知状态</string>
-
+    <string name="dispatch">首站\n发车</string>
+    <string name="wait_dispatch">等待\n发车</string>
+    <string name="not_run">暂未\n运营</string>
+    <string name="error">未知\n状态</string>
 
 </resources>
