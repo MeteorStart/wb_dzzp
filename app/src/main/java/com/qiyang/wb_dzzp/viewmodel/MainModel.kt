@@ -43,6 +43,7 @@ import java.util.*
 class MainModel constructor(private val busRepository: BusRepository) : ViewModel() {
 
     val temperature = MutableLiveData<String>()
+    val stationName = MutableLiveData<String>()
     val weather = MutableLiveData<String>()
     val icon = MutableLiveData<Drawable>()
 
